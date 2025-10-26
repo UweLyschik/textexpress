@@ -3,7 +3,35 @@
 }
 h1, h2, h3, h4, h5, h6 {margin: 0; padding: 0; font-weight: 500;}
 
-body {
-    background-color: red;
+/*---------------------------------------------*/
+/* --- document -------------------------------*/
+/*---------------------------------------------*/
+html, body {
+    font: 16px var(--wpx-font-family);
+    color: var(--wpx-color-neutral-10);
+    margin: 0; padding: 0;
 }
 
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+}
+
+/*---------------------------------------------*/
+/* --- content --------------------------------*/
+/*---------------------------------------------*/
+.content {
+    display: flex;
+    flex-direction: column;
+}
+
+/*---------------------------------------------*/
+/* --- footer ---------------------------------*/
+/*---------------------------------------------*/
+.footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+}
