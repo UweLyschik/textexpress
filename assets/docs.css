@@ -16,7 +16,12 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    background-color: #fff;
     height: 100vh;
+}
+
+a {
+    text-decoration: none;
 }
 
 /*---------------------------------------------*/
@@ -34,4 +39,6 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: end;
+    font-size: 14px;
+    margin-right: 5px;
 }
