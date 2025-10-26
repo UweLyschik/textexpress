@@ -41,9 +41,10 @@ a {
     display: flex;
     flex-direction: row;
     justify-content: end;
-    gap: 8px;
+    gap: 6px;
     font-size: 14px;
 }
+
 
 
 
