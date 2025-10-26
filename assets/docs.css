@@ -18,7 +18,7 @@ body {
     justify-content: space-between;
     background-color: #fff;
     height: 100vh;
-    padding: 12px;
+    padding: 14px;
 }
 
 a {
@@ -44,6 +44,7 @@ a {
     gap: 8px;
     font-size: 14px;
 }
+
 
 
 
