@@ -1,4 +1,34 @@
 //-------------------------------------------------------------------
+//--- UIService
+//-------------------------------------------------------------------
+const UIService = {
+
+    //----------------------------------------------------
+    //--- showDialog()
+    //----------------------------------------------------
+    showDialog(title, tmpl, width, height) {
+        return new Promise((resolve, reject) => {
+            google.script.run
+                .withSuccessHandler(resolve)
+                .withFailureHandler(reject)
+                .UIService_showDialog(title, tmpl, width, height);
+        });
+    },
+
+    //----------------------------------------------------
+    //--- showSidebar()
+    //----------------------------------------------------
+    showSidebar(title, tmpl, width) {
+        return new Promise((resolve, reject) => {
+        google.script.run
+            .withSuccessHandler(resolve)
+            .withFailureHandler(reject)
+            .UIService_showSidebar(title, tmpl, width);
+        });
+    }
+};
+
+//-------------------------------------------------------------------
 //--- collectRefs()
 //-------------------------------------------------------------------
 function collectRefs(root = document) {
@@ -36,9 +66,13 @@ const SidebarStart = {
     runAction(action) {
         const map = {
             'file-create': () => console.log('file-create'),
-            'file-open': () => console.log('file-open')
+            'file-open': () => this.showDialog()
         };
         map[action]?.();
+    },
+
+    showDialog() {
+        UIService.showDialog('Test', '<h1>TEST</h1>');
     }
 };
 
@@ -103,7 +137,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const platform = document.body.dataset.platform;
     console.log('Platform:', platform);
 
-    
     switch (platform) {
         case 'docs':
             UIDocs.init();
