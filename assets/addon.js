@@ -54,10 +54,13 @@ class FilePicker extends HTMLElement {
     }
 
     renderList(folders) {
+        this.innerHTML = '';
         this.innerHTML = `
-            <ul>
-                ${folders.map(f => `<li data-id="${f.id}">${f.name}</li>`).join('')}
-            </ul>
+            ${folders.map(f => `
+                <wpx-item data-id="${ph.id}">
+                    ${f.name}
+                </wpx-item>
+            `).join('')}
         `;
     }
 }
