@@ -57,7 +57,7 @@ class FilePicker extends HTMLElement {
         this.innerHTML = '';
         this.innerHTML = `
             ${folders.map(f => `
-                <wpx-item data-id="${ph.id}">
+                <wpx-item data-id="${f.id}">
                     ${f.name}
                 </wpx-item>
             `).join('')}
