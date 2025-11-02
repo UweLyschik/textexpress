@@ -18,12 +18,12 @@ const UIService = {
     //----------------------------------------------------
     //--- showSidebar()
     //----------------------------------------------------
-    showSidebar(title, file, width) {
+    showSidebar({title, file, data}) {
         return new Promise((resolve, reject) => {
         google.script.run
             .withSuccessHandler(resolve)
             .withFailureHandler(reject)
-            .UIService_showSidebar(title, file, width);
+            .UIService_showSidebar(title, file, data);
         });
     }
 };
@@ -74,8 +74,8 @@ const SidebarStart = {
     //-------------------------------------------------------------------
     //--- showFilePicker()
     //-------------------------------------------------------------------
-    showFilePicker(title) {
-        UIService.showDialog({
+    async showFilePicker(title) {
+        await UIService.showDialog({
             title:  title,
             file:   'dialog-file-picker',
             data:   {test: 'TEST'},
