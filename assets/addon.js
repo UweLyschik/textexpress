@@ -57,7 +57,7 @@ class FilePicker extends HTMLElement {
         this.innerHTML = '';
         this.innerHTML = `
             ${folders.map(f => `
-                <wpx-item size="lg" data-id="${f.id}">
+                <wpx-item data-id="${f.id}">
                     <wpx-icon slot="prefix" name="folder"></wpx-icon>
                     ${f.name}
                 </wpx-item>
@@ -149,8 +149,8 @@ const SidebarStart = {
             title: title,
             file: 'dialog-file-picker',
             data: {test: 'TEST'},
-            width: 700,
-            height: 400
+            width: 550,
+            height: 380
         });
     }
 };
