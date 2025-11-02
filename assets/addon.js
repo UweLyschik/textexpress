@@ -1,4 +1,78 @@
 //-------------------------------------------------------------------
+//--- Google_DriveService
+//-------------------------------------------------------------------
+const Google_DriveService = {
+
+    //----------------------------------------------------
+    //--- getFolders()
+    //----------------------------------------------------
+    getFolders(parentId = null) {
+        return new Promise((resolve, reject) => {
+            google.script.run
+                .withSuccessHandler(resolve)
+                .withFailureHandler(reject)
+                .DriveService_getFolders(parentId);
+        });
+    },
+
+    //----------------------------------------------------
+    //--- getFiles()
+    //----------------------------------------------------
+    getFiles(query = "", mimeType = null, limit = 50) {
+        return new Promise((resolve, reject) => {
+        google.script.run
+            .withSuccessHandler(resolve)
+            .withFailureHandler(reject)
+            .DriveService_getFiles(query, mimeType, limit);
+        });
+    }
+};
+
+class FilePicker extends HTMLElement {
+
+    //-------------------------------------------------------------------
+    //--- constructor()
+    //-------------------------------------------------------------------
+    constructor() {
+        super();
+        this.attachShadow({mode: 'open'});
+    }
+
+    //-------------------------------------------------------------------
+    //--- connectedCallback()
+    //-------------------------------------------------------------------
+    connectedCallback() {
+        this.getFolders();
+    }
+
+    //-------------------------------------------------------------------
+    //--- getFolders()
+    //-------------------------------------------------------------------
+    async getFolders() {
+        const folders = await Google_DriveService.getFolders();
+        this.renderList(folders);
+    }
+
+    renderList(folders) {
+        this.innerHTML = `
+            <ul>
+                ${folders.map(f => `<li data-id="${f.id}">${f.name}</li>`).join('')}
+            </ul>
+        `;
+    }
+
+    //-------------------------------------------------------------------
+    //--- setSheetId()
+    //-------------------------------------------------------------------
+    setSheetId(sheetId) {
+        this.state.sheetId = sheetId;
+        this.getTables();
+    }
+}
+
+customElements.define('google-file-picker', FilePicker);
+
+//-------------------------------------------------------------------
 //--- Google_UIService
 //-------------------------------------------------------------------
 const Google_UIService = {
@@ -76,10 +150,11 @@ const SidebarStart = {
     //-------------------------------------------------------------------
     async showFilePicker(title) {
         await Google_UIService.showDialog({
-            title:  title,
-            file:   'dialog-file-picker',
-            data:   {test: 'TEST'},
-            width:  700, height: 400
+            title: title,
+            file: 'dialog-file-picker',
+            data: {test: 'TEST'},
+            width: 700,
+            height: 400
         });
     }
 };
@@ -151,4 +226,6 @@ document.addEventListener('DOMContentLoaded', () => {
             break;
     }
 });
+
+export { FilePicker };
 //# sourceMappingURL=addon.js.map
