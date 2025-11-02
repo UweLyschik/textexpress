@@ -6,7 +6,7 @@ const UIService = {
     //----------------------------------------------------
     //--- showDialog()
     //----------------------------------------------------
-    showDialog(title, file, data, width, height) {
+    showDialog({title, file, data, width, height}) {
         return new Promise((resolve, reject) => {
             google.script.run
                 .withSuccessHandler(resolve)
@@ -65,14 +65,21 @@ const SidebarStart = {
     //-------------------------------------------------------------------
     runAction(action) {
         const map = {
-            'file-create': () => console.log('file-create'),
-            'file-open': () => this.showDialog()
+            'file-create': () => this.showFilePicker('Datei erstellen'),
+            'file-open': () => this.showFilePicker('Datei öffnen')
         };
         map[action]?.();
     },
 
-    showDialog() {
-        UIService.showDialog('Datei wählen', 'addon-file-picker', {test:'Hallo'});
+    //-------------------------------------------------------------------
+    //--- showFilePicker()
+    //-------------------------------------------------------------------
+    showFilePicker(title) {
+        UIService.showDialog({
+            title: title,
+            file:  'addon-file-picker',
+            data:  {test: 'TEST'}
+        });
     }
 };
 
