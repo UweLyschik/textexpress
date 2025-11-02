@@ -76,9 +76,10 @@ const SidebarStart = {
     //-------------------------------------------------------------------
     showFilePicker(title) {
         UIService.showDialog({
-            title: title,
-            file:  'addon-file-picker',
-            data:  {test: 'TEST'}
+            title:  title,
+            file:   'dialog-file-picker',
+            data:   {test: 'TEST'},
+            width:  700, height: 400
         });
     }
 };
