@@ -150,7 +150,7 @@ const SidebarStart = {
             file: 'dialog-file-picker',
             data: {test: 'TEST'},
             width: 600,
-            height: 380
+            height: 360
         });
     }
 };
