@@ -149,7 +149,7 @@ const SidebarStart = {
             title: title,
             file: 'dialog-file-picker',
             data: {test: 'TEST'},
-            width: 550,
+            width: 600,
             height: 380
         });
     }
