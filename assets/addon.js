@@ -35,13 +35,13 @@ class FilePicker extends HTMLElement {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
     }
 
     //-------------------------------------------------------------------
     //--- connectedCallback()
     //-------------------------------------------------------------------
     connectedCallback() {
+        this.style.display = 'block';
         this.getFolders();
     }
 
@@ -59,14 +59,6 @@ class FilePicker extends HTMLElement {
                 ${folders.map(f => `<li data-id="${f.id}">${f.name}</li>`).join('')}
             </ul>
         `;
-    }
-
-    //-------------------------------------------------------------------
-    //--- setSheetId()
-    //-------------------------------------------------------------------
-    setSheetId(sheetId) {
-        this.state.sheetId = sheetId;
-        this.getTables();
     }
 }
 
