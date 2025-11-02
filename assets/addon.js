@@ -72,7 +72,7 @@ const SidebarStart = {
     },
 
     showDialog() {
-        UIService.showDialog('Datei wählen', 'addon-file-picker');
+        UIService.showDialog('Datei wählen', 'addon-file-picker', {test:'Hallo'});
     }
 };
 
