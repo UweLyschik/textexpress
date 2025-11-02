@@ -6,24 +6,24 @@ const UIService = {
     //----------------------------------------------------
     //--- showDialog()
     //----------------------------------------------------
-    showDialog(title, tmpl, width, height) {
+    showDialog(title, file, data, width, height) {
         return new Promise((resolve, reject) => {
             google.script.run
                 .withSuccessHandler(resolve)
                 .withFailureHandler(reject)
-                .UIService_showDialog(title, tmpl, width, height);
+                .UIService_showDialog(title, file, data, width, height);
         });
     },
 
     //----------------------------------------------------
     //--- showSidebar()
     //----------------------------------------------------
-    showSidebar(title, tmpl, width) {
+    showSidebar(title, file, width) {
         return new Promise((resolve, reject) => {
         google.script.run
             .withSuccessHandler(resolve)
             .withFailureHandler(reject)
-            .UIService_showSidebar(title, tmpl, width);
+            .UIService_showSidebar(title, file, width);
         });
     }
 };
@@ -72,7 +72,7 @@ const SidebarStart = {
     },
 
     showDialog() {
-        UIService.showDialog('Datei wählen', 'addon-file-picker', 700, 400);
+        UIService.showDialog('Datei wählen', 'addon-file-picker');
     }
 };
 
