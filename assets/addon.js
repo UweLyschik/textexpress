@@ -1,7 +1,7 @@
 //-------------------------------------------------------------------
-//--- UIService
+//--- Google_UIService
 //-------------------------------------------------------------------
-const UIService = {
+const Google_UIService = {
 
     //----------------------------------------------------
     //--- showDialog()
@@ -75,7 +75,7 @@ const SidebarStart = {
     //--- showFilePicker()
     //-------------------------------------------------------------------
     async showFilePicker(title) {
-        await UIService.showDialog({
+        await Google_UIService.showDialog({
             title:  title,
             file:   'dialog-file-picker',
             data:   {test: 'TEST'},
