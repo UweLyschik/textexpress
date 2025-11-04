@@ -35,34 +35,49 @@ class FilePicker extends HTMLElement {
     //-------------------------------------------------------------------
     constructor() {
         super();
+        this.currentFolderId = null;
+        this.items = [];
     }
 
     //-------------------------------------------------------------------
     //--- connectedCallback()
     //-------------------------------------------------------------------
     connectedCallback() {
-        this.style.display = 'block';
-        this.getFolders();
-    }
-
-    //-------------------------------------------------------------------
-    //--- getFolders()
-    //-------------------------------------------------------------------
-    async getFolders() {
-        const folders = await Google_DriveService.getFolders();
-        this.renderList(folders);
-    }
-
-    renderList(folders) {
-        this.innerHTML = '';
         this.innerHTML = `
-            ${folders.map(f => `
-                <wpx-item data-id="${f.id}">
-                    <wpx-icon slot="prefix" name="folder"></wpx-icon>
-                    ${f.name}
-                </wpx-item>
-            `).join('')}
+            <div class="gfp-wrapper">
+                <div class="gfp-path"></div>
+                <wpx-button>Neuer Ordner</wpx-button>
+            </div>
+            <div class="gfp-list"></div>
         `;
+
+        this.$path = this.querySelector('.gfp-path');
+        this.$list = this.querySelector('.gfp-list');
+        this.load(null);
+    }
+
+    //-------------------------------------------------------------------
+    //--- load()
+    //-------------------------------------------------------------------
+    async load(parentId) {
+        this.currentFolderId = parentId;
+        this.items = await Google_DriveService.getFolders();
+        
+        console.log(this.items);
+        this.renderList(items);
+    }
+
+    //-------------------------------------------------------------------
+    //--- renderList()
+    //-------------------------------------------------------------------
+    renderList() {
+        this.$list.innerHTML = '';
+        this.$list.innerHTML = this.items.map(item => `
+            <wpx-item data-id="${item.id}" data-type="${item.type}">
+                <wpx-icon slot="prefix" name="folder"></wpx-icon>
+                ${item.name}
+            </wpx-item>
+        `).join("");
     }
 }
 
