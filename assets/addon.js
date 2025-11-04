@@ -62,9 +62,9 @@ class FilePicker extends HTMLElement {
     async load(parentId) {
         this.currentFolderId = parentId;
         this.items = await Google_DriveService.getFolders();
-        
+
         console.log(this.items);
-        this.renderList(items);
+        this.renderList();
     }
 
     //-------------------------------------------------------------------
