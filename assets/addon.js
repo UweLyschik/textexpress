@@ -78,6 +78,16 @@ class FilePicker extends HTMLElement {
                 ${item.name}
             </wpx-item>
         `).join("");
+
+        this.$list.addEventListener('wpx-click', e => {
+            const item = e.target.closest('wpx-item[data-type]');
+            if (!item) return;
+
+            if (item.type === "folder") {
+                this.load(item.id);
+                console.log(item.id);
+            }
+        });
     }
 }
 
