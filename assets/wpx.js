@@ -560,8 +560,8 @@ class WPX_Button extends WPX_Element {
     //--- connectedCallback()
     //-------------------------------------------------------------------
     connectedCallback() {
-        if (!this.variant) this.variant = 'neutral';
-        if (!this.fill) this.fill = 'outline';
+        if (!this.variant) this.variant = 'primary';
+        if (!this.fill) this.fill = 'default';
         if (!this.size) this.size = 'md';
         
         this.render();
