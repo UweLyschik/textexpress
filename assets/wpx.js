@@ -64,10 +64,10 @@ const variantStyles = /*css*/ `
 :host([variant="neutral"]) {
     --wpx-color-fill-strong: var(--wpx-color-neutral-40);
     --wpx-color-fill-normal: var(--wpx-color-neutral-80);
-    --wpx-color-fill-weak: var(--wpx-color-neutral-95);
-    --wpx-color-border-strong: var(--wpx-color-neutral-40);
+    --wpx-color-fill-weak: var(--wpx-color-neutral-90);
+    --wpx-color-border-strong: var(--wpx-color-neutral-50);
     --wpx-color-border-normal: var(--wpx-color-neutral-80);
-    --wpx-color-border-weak: var(--wpx-color-neutral-95);
+    --wpx-color-border-weak: var(--wpx-color-neutral-90);
     --wpx-color-on-strong: white; 
     --wpx-color-on-normal: var(--wpx-color-neutral-20); 
     --wpx-color-on-weak: var(--wpx-color-neutral-30);
@@ -78,7 +78,7 @@ const variantStyles = /*css*/ `
     --wpx-color-fill-strong: var(--wpx-color-primary-40);
     --wpx-color-fill-normal: var(--wpx-color-primary-80);
     --wpx-color-fill-weak: var(--wpx-color-primary-95);
-    --wpx-color-border-strong: var(--wpx-color-primary-40);
+    --wpx-color-border-strong: var(--wpx-color-primary-50);
     --wpx-color-border-normal: var(--wpx-color-primary-80);
     --wpx-color-border-weak: var(--wpx-color-primary-95);
     --wpx-color-on-strong: white; 
@@ -91,7 +91,7 @@ const variantStyles = /*css*/ `
     --wpx-color-fill-strong: var(--wpx-color-success-40);
     --wpx-color-fill-normal: var(--wpx-color-success-80);
     --wpx-color-fill-weak: var(--wpx-color-success-95);
-    --wpx-color-border-strong: var(--wpx-color-success-40);
+    --wpx-color-border-strong: var(--wpx-color-success-50);
     --wpx-color-border-normal: var(--wpx-color-success-80);
     --wpx-color-border-weak: var(--wpx-color-success-95);
     --wpx-color-on-strong: white; 
@@ -104,7 +104,7 @@ const variantStyles = /*css*/ `
     --wpx-color-fill-strong: var(--wpx-color-warning-40);
     --wpx-color-fill-normal: var(--wpx-color-warning-80);
     --wpx-color-fill-weak: var(--wpx-color-warning-95);
-    --wpx-color-border-strong: var(--wpx-color-warning-40);
+    --wpx-color-border-strong: var(--wpx-color-warning-50);
     --wpx-color-border-normal: var(--wpx-color-warning-80);
     --wpx-color-border-weak: var(--wpx-color-warning-95);
     --wpx-color-on-strong: white; 
@@ -117,7 +117,7 @@ const variantStyles = /*css*/ `
     --wpx-color-fill-strong: var(--wpx-color-danger-40);
     --wpx-color-fill-normal: var(--wpx-color-danger-80);
     --wpx-color-fill-weak: var(--wpx-color-danger-95);
-    --wpx-color-border-strong: var(--wpx-color-danger-40);
+    --wpx-color-border-strong: var(--wpx-color-danger-50);
     --wpx-color-border-normal: var(--wpx-color-danger-80);
     --wpx-color-border-weak: var(--wpx-color-danger-95);
     --wpx-color-on-strong: white; 
@@ -377,13 +377,13 @@ const styles$i = /*css*/ `
 /* +++ default +++++++++++++++++++++++*/
 :host([fill="default"]) .button {
     background-color: transparent;
-    border-color: var(--wpx-color-neutral-70);
-    color: var(--wpx-color-neutral-40);
+    border-color: var(--wpx-color-neutral-50);
+    color: var(--wpx-color-neutral-30);
 }
 
 :host([fill="default"]) .button:hover {
     background-color: var(--wpx-color-fill-weak);
-    border-color: var(--wpx-color-border-normal);
+    border-color: var(--wpx-color-border-strong);
     color: var(--wpx-color-on-weak);
 }
 
@@ -433,7 +433,7 @@ const styles$i = /*css*/ `
 }
 
 :host([fill="outline"]) .button:hover {
-    background-color: color-mix(in srgb, var(--wpx-color-fill-normal) 40%, white);
+    background-color: var(--wpx-color-fill-weak);
 }
 
 :host([fill="outline"]) .button:active {
@@ -560,8 +560,8 @@ class WPX_Button extends WPX_Element {
     //--- connectedCallback()
     //-------------------------------------------------------------------
     connectedCallback() {
-        if (!this.variant) this.variant = 'primary';
-        if (!this.fill) this.fill = 'default';
+        if (!this.variant) this.variant = 'neutral';
+        if (!this.fill) this.fill = 'outline';
         if (!this.size) this.size = 'md';
         
         this.render();
