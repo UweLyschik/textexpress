@@ -57,7 +57,7 @@ const styles = /*css*/ `
 }
 
 .crumb:hover {
-    text-decoration: underline;
+    color: var(--wpx-color-primary-30);
 }
 
 .gfp-list {
@@ -74,7 +74,6 @@ class FilePicker extends HTMLElement {
         super();
         this.path = [];
         this.items = [];
-        this.currentFolderId = null;
         this.attachShadow({mode: 'open'});
     }
 
@@ -107,7 +106,6 @@ class FilePicker extends HTMLElement {
             this.path.push({id: folderId, name: folderName});
         }
 
-        this.currentFolderId = folderId;
         this.load(folderId);
         this.renderBreadcrumb();
     }
@@ -119,7 +117,6 @@ class FilePicker extends HTMLElement {
         this.path = this.path.slice(0, index + 1);
         const current = this.path[this.path.length - 1];
         
-        this.currentFolderId = current.id;
         this.load(current.id);
         this.renderBreadcrumb();
     }
