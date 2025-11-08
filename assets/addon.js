@@ -28,6 +28,43 @@ const Google_DriveService = {
     }
 };
 
+const styles = /*css*/ `
+:host {
+    display: block;
+}
+
+.gfp-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+
+.gfp-path {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: var(--wpx-spacing-xs) 0;
+    border-bottom: 1px solid var(--wpx-color-neutral-80);
+}
+
+.crumb {
+    cursor: pointer;
+    color: var(--wpx-color-primary-40);
+    white-space: nowrap;
+    user-select: none;
+}
+
+.crumb:hover {
+    text-decoration: underline;
+}
+
+.gfp-list {
+    margin-top: var(--wpx-spacing-xs);
+}
+`;
+
 class FilePicker extends HTMLElement {
 
     //-------------------------------------------------------------------
@@ -38,21 +75,24 @@ class FilePicker extends HTMLElement {
         this.path = [];
         this.items = [];
         this.currentFolderId = null;
+        this.attachShadow({mode: 'open'});
     }
 
     //-------------------------------------------------------------------
     //--- connectedCallback()
     //-------------------------------------------------------------------
     connectedCallback() {
-        this.innerHTML = `
+        this.root = this.shadowRoot;
+        this.root.innerHTML = `
+            <style>${styles}</style>
             <div class="gfp-header">
                 <div class="gfp-path"></div>
             </div>
             <div class="gfp-list"></div>
         `;
 
-        this.$path = this.querySelector('.gfp-path');
-        this.$list = this.querySelector('.gfp-list');
+        this.$path = this.root.querySelector('.gfp-path');
+        this.$list = this.root.querySelector('.gfp-list');
         this.navigateTo(null, 'Meine Ablage');
     }
 
@@ -62,7 +102,7 @@ class FilePicker extends HTMLElement {
     navigateTo(folderId, folderName) {
         const last = this.path[this.path.length - 1];
 
-        // Nur hinzufügen, wenn es wirklich ein neuer Ordner ist
+        // Nur hinzufügen, wenn es ein neuer Ordner ist
         if (!last || last.id !== folderId) {
             this.path.push({id: folderId, name: folderName});
         }
@@ -98,7 +138,7 @@ class FilePicker extends HTMLElement {
     renderBreadcrumb() {
         this.$path.innerHTML = this.path.map((p, i) => `
             <span class="crumb" data-index="${i}">${p.name}</span>
-        `).join(`<span class="sep"> / </span>`);
+        `).join(`<wpx-icon name="chevron-right"></wpx-icon>`);
 
         this.$path.querySelectorAll('.crumb').forEach(el => {
             el.addEventListener('click', () => {
@@ -120,7 +160,6 @@ class FilePicker extends HTMLElement {
         `).join("");
 
         this.$list.querySelectorAll('wpx-item').forEach(item => {
-
             // Einfach-Klick auf Datei
             item.addEventListener('wpx-click', () => {
                 const id = item.dataset.id;
