@@ -260,8 +260,8 @@ class WPX_Alert extends WPX_Element {
     render() {
         this.setHtml(`
             <div class="alert">
-                <slot name="icon"></slot>
-                <slot></slot>
+                <div class="icon"><slot name="icon"></slot></div>
+                <div class="message"><slot></slot></div>
             </div>
         `);
     }
