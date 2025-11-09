@@ -135,6 +135,7 @@ const styles$k = /*css*/ `
     display: flex;
     flex-direction: row;
     align-items: center;
+    gap: var(--wpx-spacing-sm);
     border-width: 1px;
     border-style: solid;
     padding: var(--wpx-spacing-md);
@@ -178,14 +179,6 @@ const styles$k = /*css*/ `
 :host([size="lg"]) .alert {
     font-size: var(----wpx-font-size-lg);
     border-radius: var(--wpx-border-radius-md);
-}
-
-/*------------------------------------*/
-/* --- slots ------------------------ */
-/*------------------------------------*/
-::slotted([slot="icon"]) {
-    flex: 0 0 auto;
-    margin-right: var(--wpx-spacing-sm);
 }
 `;
 
