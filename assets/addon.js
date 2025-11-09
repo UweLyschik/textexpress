@@ -33,14 +33,14 @@ const styles = /*css*/ `
     display: block;
 }
 
-.gfp-header {
+.header {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 5px;
 }
 
-.gfp-path {
+.path {
     flex: 1;
     display: flex;
     align-items: center;
@@ -60,8 +60,10 @@ const styles = /*css*/ `
     color: var(--wpx-color-primary-30);
 }
 
-.gfp-list {
+.list {
     margin-top: var(--wpx-spacing-xs);
+    height: 100%;
+    background-color: blue;
 }
 `;
 
@@ -84,14 +86,14 @@ class FilePicker extends HTMLElement {
         this.root = this.shadowRoot;
         this.root.innerHTML = `
             <style>${styles}</style>
-            <div class="gfp-header">
-                <div class="gfp-path"></div>
+            <div class="header">
+                <div class="path"></div>
             </div>
-            <div class="gfp-list"></div>
+            <div class="list"></div>
         `;
 
-        this.$path = this.root.querySelector('.gfp-path');
-        this.$list = this.root.querySelector('.gfp-list');
+        this.$path = this.root.querySelector('.path');
+        this.$list = this.root.querySelector('.list');
         this.navigateTo(null, 'Meine Ablage');
     }
 
@@ -125,7 +127,11 @@ class FilePicker extends HTMLElement {
     //--- load(parentId)
     //-------------------------------------------------------------------
     async load(parentId) {
-        this.$list.innerHTML = '<wpx-spinner></wpx-spinner>';
+        this.$list.innerHTML = `
+            <div class="spinner">
+                <wpx-spinner></wpx-spinner>
+            </div>
+        `;
         this.items = await Google_DriveService.getFolders(parentId);
         this.renderList();
     }
