@@ -56,7 +56,7 @@ const styles = /*css*/ `
 .spinner {
     display: flex;
     justify-content: center;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     margin-top: 40px;
 }
 
