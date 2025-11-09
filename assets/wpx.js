@@ -126,7 +126,7 @@ const variantStyles = /*css*/ `
 }
 `;
 
-const styles$j = /*css*/ `
+const styles$k = /*css*/ `
 :host {
     display: block;
 }
@@ -239,7 +239,7 @@ class WPX_Alert extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$j, variantStyles]);
+        this.init([styles$k, variantStyles]);
         this.timer = null;
     }
 
@@ -307,7 +307,7 @@ class WPX_Alert extends WPX_Element {
 
 customElements.define('wpx-alert', WPX_Alert);
 
-const styles$i = /*css*/ `
+const styles$j = /*css*/ `
 :host {
     display: inline-block;
     position: relative;
@@ -553,7 +553,7 @@ class WPX_Button extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$i, variantStyles]);
+        this.init([styles$j, variantStyles]);
     }
 
     //-------------------------------------------------------------------
@@ -620,7 +620,7 @@ const controlStyles = /*css*/ `
 }
 `;
 
-const styles$h = /*css*/ `
+const styles$i = /*css*/ `
 :host {
     display: inline-flex;
     flex-direction: column;
@@ -743,7 +743,7 @@ class WPX_Checkbox extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$h, controlStyles]);
+        this.init([styles$i, controlStyles]);
     }
 
     //-------------------------------------------------------------------
@@ -801,7 +801,7 @@ class WPX_Checkbox extends WPX_Element {
 
 customElements.define('wpx-checkbox', WPX_Checkbox);
 
-const styles$g = /*css*/ `
+const styles$h = /*css*/ `
 :host {
     display: block;
 }
@@ -914,7 +914,7 @@ class WPX_Details extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$g]);
+        this.init([styles$h]);
     }
 
     //-------------------------------------------------------------------
@@ -964,7 +964,7 @@ class WPX_Details extends WPX_Element {
 
 customElements.define('wpx-details', WPX_Details);
 
-const styles$f = /*css*/ `
+const styles$g = /*css*/ `
 :host {
     --width: 600px;
     display: none;
@@ -1038,7 +1038,7 @@ class WPX_Dialog extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$f]);
+        this.init([styles$g]);
     }
 
     //-------------------------------------------------------------------
@@ -1087,7 +1087,7 @@ class WPX_Dialog extends WPX_Element {
 
 customElements.define('wpx-dialog', WPX_Dialog);
 
-const styles$e = /*css*/ `
+const styles$f = /*css*/ `
 :host {
     --color: var(--wpx-color-neutral-80);
     --width: 1px;
@@ -1109,7 +1109,7 @@ class WPX_Divider extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$e]);
+        this.init([styles$f]);
     }
 
     //-------------------------------------------------------------------
@@ -1122,7 +1122,7 @@ class WPX_Divider extends WPX_Element {
 
 customElements.define('wpx-divider', WPX_Divider);
 
-const styles$d = /*css*/ `
+const styles$e = /*css*/ `
 :host {
     --size: 300px;
     position: fixed;
@@ -1259,7 +1259,7 @@ class WPX_Drawer extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$d]);
+        this.init([styles$e]);
         this.onKeyDown = this.onKeyDown.bind(this);
     }
 
@@ -1333,7 +1333,7 @@ class WPX_Drawer extends WPX_Element {
 
 customElements.define('wpx-drawer', WPX_Drawer);
 
-const styles$c = /*css*/ `
+const styles$d = /*css*/ `
 :host {
     display: inline-block;
     position: relative;
@@ -1377,7 +1377,7 @@ class WPX_Dropdown extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$c]);
+        this.init([styles$d]);
     }
 
     //-------------------------------------------------------------------
@@ -1418,7 +1418,7 @@ class WPX_Dropdown extends WPX_Element {
 
 customElements.define('wpx-dropdown', WPX_Dropdown);
 
-const styles$b = /*css*/ `
+const styles$c = /*css*/ `
 :host {
     display: inline-block;
     width: 1em;
@@ -1455,7 +1455,7 @@ class WPX_Icon extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$b]);
+        this.init([styles$c]);
     }
 
     //-------------------------------------------------------------------
@@ -1490,7 +1490,7 @@ class WPX_Icon extends WPX_Element {
 
 customElements.define('wpx-icon', WPX_Icon);
 
-const styles$a = /*css*/ `
+const styles$b = /*css*/ `
 :host {
     display: block;
 }
@@ -1520,7 +1520,7 @@ class WPX_Include extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$a]);
+        this.init([styles$b]);
     }
 
     //-------------------------------------------------------------------
@@ -1560,7 +1560,7 @@ class WPX_Include extends WPX_Element {
 
 customElements.define('wpx-include', WPX_Include);
 
-const styles$9 = /*css*/ `
+const styles$a = /*css*/ `
 :host {
     display: flex;
     flex-direction: column;
@@ -1703,7 +1703,7 @@ class WPX_Input extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$9, controlStyles]);
+        this.init([styles$a, controlStyles]);
     }
 
     //-------------------------------------------------------------------
@@ -1749,7 +1749,7 @@ class WPX_Input extends WPX_Element {
 
 customElements.define('wpx-input', WPX_Input);
 
-const styles$8 = /*css*/ `
+const styles$9 = /*css*/ `
 :host {
     display: block;
 }
@@ -1883,7 +1883,7 @@ class WPX_Item extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$8]);
+        this.init([styles$9]);
     }
 
     //-------------------------------------------------------------------
@@ -1951,7 +1951,7 @@ class WPX_Item extends WPX_Element {
 
 customElements.define('wpx-item', WPX_Item);
 
-const styles$7 = /*css*/ `
+const styles$8 = /*css*/ `
 :host {
     display: flex;
     flex-direction: column;
@@ -1969,7 +1969,7 @@ class WPX_List extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$7]);
+        this.init([styles$8]);
     }
 
     //-------------------------------------------------------------------
@@ -1993,7 +1993,7 @@ class WPX_List extends WPX_Element {
 
 customElements.define('wpx-list', WPX_List);
 
-const styles$6 = /*css*/ `
+const styles$7 = /*css*/ `
 :host {
     position: absolute;
     display: none;
@@ -3395,7 +3395,7 @@ class WPX_Popup extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$6]);
+        this.init([styles$7]);
         this.open = false;
     }
 
@@ -3430,7 +3430,7 @@ class WPX_Popup extends WPX_Element {
 
 customElements.define('wpx-popup', WPX_Popup);
 
-const styles$5 = /*css*/ `
+const styles$6 = /*css*/ `
 :host {
     display: flex;
     flex-direction: column;
@@ -3555,7 +3555,7 @@ class WPX_Select extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$5]);
+        this.init([styles$6]);
     }
 
     //-------------------------------------------------------------------
@@ -3587,6 +3587,60 @@ class WPX_Select extends WPX_Element {
 }
 
 customElements.define('wpx-select', WPX_Select);
+
+const styles$5 = /*css*/ `
+:host {
+    --track-width: 2px;
+    --track-color: rgba(0,0,0,0.1);
+    --indicator-color: var(--wpx-color-primary-50);
+    --speed: 0.8s;
+
+    display: inline-flex;
+    width: 1em;
+    height: 1em;
+}
+
+.spinner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: var(--track-width) solid var(--track-color);
+    border-top-color: var(--indicator-color);
+    animation: spin var(--speed) linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0); }
+    100% { transform: rotate(360deg); }
+}
+`;
+
+//-------------------------------------------------------------------
+//--- Element: WPX_Spinner
+//-------------------------------------------------------------------
+class WPX_Spinner extends WPX_Element {
+
+    //-------------------------------------------------------------------
+    //--- constructor()
+    //-------------------------------------------------------------------
+    constructor() {
+        super();
+        this.init([styles$5]);
+    }
+
+    //-------------------------------------------------------------------
+    //--- connectedCallback()
+    //-------------------------------------------------------------------
+    connectedCallback() {
+        if (!this.shadowRoot.querySelector('.spinner')) {
+            const div = document.createElement('div');
+            div.classList.add('spinner');
+            this.shadowRoot.appendChild(div);
+        }
+    }
+}
+
+customElements.define('wpx-spinner', WPX_Spinner);
 
 const styles$4 = /*css*/ `
 :host {
@@ -3741,7 +3795,8 @@ const styles$3 = /*css*/ `
 .tabs-nav {
     display: flex;
     flex-direction: row;
-    gap: 0.5rem;
+    align-items: center;
+    gap: var(--wpx-spacing-xs2);
 }
 
 .tabs-panels {
@@ -3763,6 +3818,13 @@ const styles$3 = /*css*/ `
 :host([placement="right"]) .tabs {
     flex-direction: row-reverse;
 }
+
+/*------------------------------------*/
+/* --- fill (default) line ---------- */
+/*------------------------------------*/
+:host([fill="default"]) .tabs-nav {
+    border-bottom: 1px solid var(--wpx-color-neutral-70);
+}
 `;
 
 //-------------------------------------------------------------------
@@ -3771,7 +3833,7 @@ const styles$3 = /*css*/ `
 class WPX_Tabs extends WPX_Element {
 
     static get observedAttributes() {
-        return ['active', 'placement'];
+        return ['active', 'fill', 'placement'];
     }
 
 // #region Attributes
@@ -3781,6 +3843,12 @@ class WPX_Tabs extends WPX_Element {
     //-------------------------------------------------------------------
     get active() {return this.getAttribute('active');}
     set active(value) {this.setAttribute('active', value);}
+
+    //-------------------------------------------------------------------
+    //--- Attribute: fill
+    //-------------------------------------------------------------------
+    get fill() {return this.getAttribute('fill');}
+    set fill(value) {this.setAttribute('fill', value);}
 
     //-------------------------------------------------------------------
     //--- Attribute: placement
@@ -3802,6 +3870,7 @@ class WPX_Tabs extends WPX_Element {
     //--- connectedCallback()
     //-------------------------------------------------------------------
     connectedCallback() {
+        if (!this.fill) this.fill = 'default';
         if (!this.placement) this.placement = 'top';
 
         this.tabs = this.querySelectorAll("wpx-tab");
@@ -3825,7 +3894,9 @@ class WPX_Tabs extends WPX_Element {
         tabs.className = 'tabs';
         tabs.innerHTML = `
             <div class="tabs-nav">
+                <slot name="prefix">P</slot>
                 <slot name="nav"></slot>
+                <slot name="suffix"></slot>
             </div>
             <div class="tabs-panels">
                 <slot></slot>
@@ -3868,22 +3939,54 @@ const styles$2 = /*css*/ `
 }
 
 .tab {
-    background-color: var(--wpx-color-neutral-90);
+    display: flex;
+    align-items: center;
+    height: var(--wpx-control-height-md);
+    padding: 0 var(--wpx-spacing-md);
     border-radius: var(--wpx-border-radius-md);
-    padding: var(--wpx-spacing-xs) var(--wpx-spacing-md);
-    transition: background-color var(--wpx-transition-fast) ease;
+    transition: all var(--wpx-transition-fast) ease;
     cursor: pointer;
 }
 
-.tab:hover {
+/*------------------------------------*/
+/* --- fill ------------------------- */
+/*------------------------------------*/
+
+/* +++ default (underline) +++++++++++*/
+:host([fill="default"]) .tab {
+    background-color: transparent;
+    border-radius: 0;
+    border-bottom: 2px solid transparent;
+    color: var(--wpx-color-neutral-40);
+}
+
+:host([fill="default"]) .tab:hover {
+    color: var(--wpx-color-primary-50);
+}
+
+:host([fill="default"][active]) .tab {
+    border-bottom-color: var(--wpx-color-primary-40);
+    color: var(--wpx-color-primary-40);
+}
+
+/* +++ solid  ++++++++++++++++++++++++*/
+:host([fill="solid"]) .tab {
+    background-color: var(--wpx-color-primary-95);
+    border-radius: var(--wpx-border-radius-md);
+}
+
+:host([fill="solid"]) .tab:hover {
     background-color: var(--wpx-color-primary-90);
 }
 
-:host([active]) .tab {
+:host([fill="solid"][active]) .tab {
     background-color: var(--wpx-color-primary-40);
     color: white;
 }
 
+/*------------------------------------*/
+/* --- disabled --------------------- */
+/*------------------------------------*/
 :host([disabled]) .tab {
     opacity: 0.5;
     cursor: not-allowed;
@@ -3921,6 +4024,14 @@ class WPX_Tab extends WPX_Element {
     //--- connectedCallback()
     //-------------------------------------------------------------------
     connectedCallback() {
+
+        // fill Attribut von wpx-tabs auf Element übertragen
+        const parentTabs = this.closest('wpx-tabs');
+        if (parentTabs) {
+            const fill = parentTabs.getAttribute('fill') || 'default';
+            this.setAttribute('fill', fill);
+        }
+
         this.render();
     }
 
@@ -4137,5 +4248,5 @@ class WPX_Textarea extends WPX_Element {
 
 customElements.define('wpx-textarea', WPX_Textarea);
 
-export { WPX_Alert, WPX_Button, WPX_Checkbox, WPX_Details, WPX_Dialog, WPX_Divider, WPX_Drawer, WPX_Dropdown, WPX_Icon, WPX_Include, WPX_Input, WPX_Item, WPX_List, WPX_Popup, WPX_Radio, WPX_Select, WPX_Tab, WPX_TabPanel, WPX_Tabs, WPX_Textarea };
+export { WPX_Alert, WPX_Button, WPX_Checkbox, WPX_Details, WPX_Dialog, WPX_Divider, WPX_Drawer, WPX_Dropdown, WPX_Icon, WPX_Include, WPX_Input, WPX_Item, WPX_List, WPX_Popup, WPX_Radio, WPX_Select, WPX_Spinner, WPX_Tab, WPX_TabPanel, WPX_Tabs, WPX_Textarea };
 //# sourceMappingURL=wpx.js.map
