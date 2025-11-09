@@ -3942,7 +3942,7 @@ const styles$2 = /*css*/ `
     display: flex;
     align-items: center;
     height: var(--wpx-control-height-md);
-    padding: 0 var(--wpx-spacing-md);
+    padding: 0 var(--wpx-spacing-sm);
     border-radius: var(--wpx-border-radius-md);
     transition: all var(--wpx-transition-fast) ease;
     cursor: pointer;
@@ -3972,7 +3972,6 @@ const styles$2 = /*css*/ `
 /* +++ solid  ++++++++++++++++++++++++*/
 :host([fill="solid"]) .tab {
     background-color: var(--wpx-color-primary-95);
-    border-radius: var(--wpx-border-radius-md);
 }
 
 :host([fill="solid"]) .tab:hover {
