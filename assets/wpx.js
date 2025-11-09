@@ -148,16 +148,16 @@ const styles$k = /*css*/ `
 /* --- fill: solid ------------------ */
 /*------------------------------------*/
 :host([fill="solid"]) .alert {
-    background-color: var(--wpx-color-fill-strong);
-    border-color: var(--wpx-color-border-strong);
-    color: var(--wpx-color-on-strong);
+    background-color: var(--wpx-color-fill-normal);
+    border-color: var(--wpx-color-border-normal);
+    color: var(--wpx-color-on-normal);
 }
 
 /*------------------------------------*/
 /* --- fill: filled ----------------- */
 /*------------------------------------*/
 :host([fill="filled"]) .alert {
-    background-color: var(--wpx-color-fill-normal);
+    background-color: var(--wpx-color-fill-weak);
     border-color: var(--wpx-color-border-normal);
     color: var(--wpx-color-on-normal);
 }
@@ -3894,7 +3894,7 @@ class WPX_Tabs extends WPX_Element {
         tabs.className = 'tabs';
         tabs.innerHTML = `
             <div class="tabs-nav">
-                <slot name="prefix">P</slot>
+                <slot name="prefix"></slot>
                 <slot name="nav"></slot>
                 <slot name="suffix"></slot>
             </div>
@@ -3969,7 +3969,7 @@ const styles$2 = /*css*/ `
     color: var(--wpx-color-primary-40);
 }
 
-/* +++ solid  ++++++++++++++++++++++++*/
+/* +++ solid +++++++++++++++++++++++++*/
 :host([fill="solid"]) .tab {
     background-color: var(--wpx-color-primary-95);
 }
