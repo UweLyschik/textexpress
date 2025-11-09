@@ -125,6 +125,7 @@ class FilePicker extends HTMLElement {
     //--- load(parentId)
     //-------------------------------------------------------------------
     async load(parentId) {
+        this.$list.innerHTML = '<wpx-spinner></wpx-spinner>';
         this.items = await Google_DriveService.getFolders(parentId);
         this.renderList();
     }
