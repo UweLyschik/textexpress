@@ -49,6 +49,17 @@ const styles = /*css*/ `
     border-bottom: 1px solid var(--wpx-color-neutral-80);
 }
 
+.list {
+    margin-top: var(--wpx-spacing-xs);
+}
+
+.spinner {
+    display: flex;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-top: 40px;
+}
+
 .crumb {
     cursor: pointer;
     color: var(--wpx-color-primary-40);
@@ -58,12 +69,6 @@ const styles = /*css*/ `
 
 .crumb:hover {
     color: var(--wpx-color-primary-30);
-}
-
-.list {
-    margin-top: var(--wpx-spacing-xs);
-    height: 100%;
-    background-color: blue;
 }
 `;
 
