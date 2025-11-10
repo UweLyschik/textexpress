@@ -37,16 +37,21 @@ const styles = /*css*/ `
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 5px;
+    gap: var(--wpx-spacing-xs);
 }
 
 .path {
     flex: 1;
     display: flex;
+    flex-direction: row;
     align-items: center;
     gap: 5px;
-    padding: var(--wpx-spacing-xs) 0;
-    border-bottom: 1px solid var(--wpx-color-neutral-80);
+    height: var(--wpx-control-height-md);
+    border: 1px solid var(--wpx-color-neutral-40);
+    border-radius: var(--wpx-border-radius-md);
+    padding: 0 var(--wpx-spacing-xs);
+
+    box-sizing: border-box;
 }
 
 .list {
@@ -92,12 +97,15 @@ class FilePicker extends HTMLElement {
         this.root.innerHTML = `
             <style>${styles}</style>
             <div class="header">
-                <div class="path"></div>
+                <div class="path">
+                    <wpx-breadcrumb></wpx-breadcrumb>
+                </div>
+                <wpx-button>Neuer Ordner</wpx-button>
             </div>
             <div class="list"></div>
         `;
 
-        this.$path = this.root.querySelector('.path');
+        this.$breadcrumb = this.root.querySelector('wpx-breadcrumb');
         this.$list = this.root.querySelector('.list');
         this.navigateTo(null, 'Meine Ablage');
     }
@@ -114,7 +122,6 @@ class FilePicker extends HTMLElement {
         }
 
         this.load(folderId);
-        this.renderBreadcrumb();
     }
 
     //-------------------------------------------------------------------
@@ -123,9 +130,7 @@ class FilePicker extends HTMLElement {
     navigateIndex(index) {
         this.path = this.path.slice(0, index + 1);
         const current = this.path[this.path.length - 1];
-        
         this.load(current.id);
-        this.renderBreadcrumb();
     }
 
     //-------------------------------------------------------------------
@@ -138,6 +143,7 @@ class FilePicker extends HTMLElement {
             </div>
         `;
         this.items = await Google_DriveService.getFolders(parentId);
+        this.renderBreadcrumb();
         this.renderList();
     }
 
@@ -145,11 +151,11 @@ class FilePicker extends HTMLElement {
     //--- renderBreadcrumb()
     //-------------------------------------------------------------------
     renderBreadcrumb() {
-        this.$path.innerHTML = this.path.map((p, i) => `
-            <span class="crumb" data-index="${i}">${p.name}</span>
-        `).join(`<wpx-icon name="chevron-right"></wpx-icon>`);
+        this.$breadcrumb.innerHTML = this.path.map((p, i) => `
+            <wpx-breadcrumb-item data-index="${i}">${p.name}</wpx-breadcrumb-item>
+        `).join('');
 
-        this.$path.querySelectorAll('.crumb').forEach(el => {
+        this.$breadcrumb.querySelectorAll('wpx-breadcrumb-item').forEach(el => {
             el.addEventListener('click', () => {
                 const index = parseInt(el.dataset.index);
                 this.navigateIndex(index);
