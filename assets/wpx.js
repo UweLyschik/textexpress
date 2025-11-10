@@ -126,7 +126,7 @@ const variantStyles = /*css*/ `
 }
 `;
 
-const styles$k = /*css*/ `
+const styles$m = /*css*/ `
 :host {
     display: block;
 }
@@ -232,7 +232,7 @@ class WPX_Alert extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$k, variantStyles]);
+        this.init([styles$m, variantStyles]);
         this.timer = null;
     }
 
@@ -299,6 +299,94 @@ class WPX_Alert extends WPX_Element {
 }
 
 customElements.define('wpx-alert', WPX_Alert);
+
+const styles$l = /*css*/ `
+:host {
+    display: inline-flex;
+    align-items: center;
+    gap: 0rem;
+}
+
+::slotted([slot="separator"]) {
+    display: inline-flex;
+    align-items: center;
+}
+`;
+
+//-------------------------------------------------------------------
+//--- Element: WPX_Breadcrumb
+//-------------------------------------------------------------------
+class WPX_Breadcrumb extends WPX_Element {
+
+    //-------------------------------------------------------------------
+    //--- constructor()
+    //-------------------------------------------------------------------
+    constructor() {
+        super();
+        this.init([styles$l]);
+    }
+
+    //-------------------------------------------------------------------
+    //--- connectedCallback()
+    //-------------------------------------------------------------------
+    connectedCallback() {
+        this.render();
+    }
+
+    //-------------------------------------------------------------------
+    //--- render()
+    //-------------------------------------------------------------------
+    render() {
+        this.setHtml(`<slot></slot>`);
+    }
+}
+
+customElements.define('wpx-breadcrumb', WPX_Breadcrumb);
+
+const styles$k = /*css*/ `
+:host {
+    display: inline-flex;
+    align-items: center;
+}
+`;
+
+//-------------------------------------------------------------------
+//--- Element: WPX_BreadcrumbItem
+//-------------------------------------------------------------------
+class WPX_BreadcrumbItem extends WPX_Element {
+
+    //-------------------------------------------------------------------
+    //--- constructor()
+    //-------------------------------------------------------------------
+    constructor() {
+        super();
+        this.init([styles$k]);
+    }
+
+    //-------------------------------------------------------------------
+    //--- connectedCallback()
+    //-------------------------------------------------------------------
+    connectedCallback() {
+        this.render();
+    }
+
+    //-------------------------------------------------------------------
+    //--- render()
+    //-------------------------------------------------------------------
+    render() {
+        this.getAttribute('href');
+        const isLast = this === this.parentElement?.lastElementChild;
+
+        this.setHtml(`
+            <wpx-button fill="none"><slot></slot></wpx-button>
+            ${isLast ? '' : `
+                <wpx-icon name="chevron-right"></wpx-icon>
+            `}
+        `);
+    }
+}
+
+customElements.define('wpx-breadcrumb-item', WPX_BreadcrumbItem);
 
 const styles$j = /*css*/ `
 :host {
@@ -3585,7 +3673,7 @@ const styles$5 = /*css*/ `
 :host {
     --track-width: 2px;
     --track-color: rgba(0,0,0,0.1);
-    --indicator-color: var(--wpx-color-primary-50);
+    --indicator-color: var(--wpx-color-primary-40);
     --speed: 0.8s;
 
     display: inline-flex;
@@ -4240,5 +4328,5 @@ class WPX_Textarea extends WPX_Element {
 
 customElements.define('wpx-textarea', WPX_Textarea);
 
-export { WPX_Alert, WPX_Button, WPX_Checkbox, WPX_Details, WPX_Dialog, WPX_Divider, WPX_Drawer, WPX_Dropdown, WPX_Icon, WPX_Include, WPX_Input, WPX_Item, WPX_List, WPX_Popup, WPX_Radio, WPX_Select, WPX_Spinner, WPX_Tab, WPX_TabPanel, WPX_Tabs, WPX_Textarea };
+export { WPX_Alert, WPX_Breadcrumb, WPX_BreadcrumbItem, WPX_Button, WPX_Checkbox, WPX_Details, WPX_Dialog, WPX_Divider, WPX_Drawer, WPX_Dropdown, WPX_Icon, WPX_Include, WPX_Input, WPX_Item, WPX_List, WPX_Popup, WPX_Radio, WPX_Select, WPX_Spinner, WPX_Tab, WPX_TabPanel, WPX_Tabs, WPX_Textarea };
 //# sourceMappingURL=wpx.js.map
