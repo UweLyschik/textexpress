@@ -423,7 +423,7 @@ const styles$j = /*css*/ `
 /* +++ small +++++++++++++++++++++++++*/
 :host([size="sm"]) .button {
     height: var(--wpx-control-height-sm);
-    font-size: var(--wpx-btn-font-size-sm);
+    font-size: var(--wpx-font-size-sm);
     border-radius: var(--wpx-border-radius-md);
 }
 :host([size="sm"]) .icon-button {
@@ -433,18 +433,17 @@ const styles$j = /*css*/ `
 /* +++ medium ++++++++++++++++++++++++*/
 :host([size="md"]) .button {
     height: var(--wpx-control-height-md);
-    font-size: var(--wpx-btn-font-size-md);
+    font-size: var(--wpx-font-size-md);
     border-radius: var(--wpx-border-radius-md);
 }
 :host([size="md"]) .icon-button {
     width: var(--wpx-control-height-md);
-    font-size: var(--wpx-font-size-md);
 }
 
 /* +++ large +++++++++++++++++++++++++*/
 :host([size="lg"]) .button {
     height: var(--wpx-control-height-lg);
-    font-size: var(--wpx-btn-font-size-lg);
+    font-size: var(--wpx-font-size-lg);
     border-radius: var(--wpx-border-radius-md);
 }
 :host([size="lg"]) .icon-button {
