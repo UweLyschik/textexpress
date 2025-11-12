@@ -413,8 +413,6 @@ const styles$j = /*css*/ `
     cursor: pointer;
 }
 
-.icon-button {padding: 0;}
-
 /*------------------------------------*/
 /* --- sizes ------------------------ */
 /*------------------------------------*/
@@ -428,6 +426,7 @@ const styles$j = /*css*/ `
 }
 :host([size="sm"]) .icon-button {
     width: var(--wpx-control-height-sm);
+    padding: 0;
 }
 
 /* +++ medium ++++++++++++++++++++++++*/
@@ -439,6 +438,7 @@ const styles$j = /*css*/ `
 }
 :host([size="md"]) .icon-button {
     width: var(--wpx-control-height-md);
+    padding: 0;
 }
 
 /* +++ large +++++++++++++++++++++++++*/
@@ -450,6 +450,7 @@ const styles$j = /*css*/ `
 }
 :host([size="lg"]) .icon-button {
     width: var(--wpx-control-height-lg);
+    padding: 0;
 }
 
 /*------------------------------------*/
