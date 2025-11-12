@@ -38,6 +38,7 @@ const styles = /*css*/ `
     flex-direction: row;
     align-items: center;
     gap: var(--wpx-spacing-xs);
+    margin-top: var(--wpx-spacing-xs);
 }
 
 .path {
@@ -47,7 +48,7 @@ const styles = /*css*/ `
     align-items: center;
     gap: 5px;
     height: var(--wpx-control-height-md);
-    border: 1px solid var(--wpx-color-neutral-40);
+    border: 1px solid var(--wpx-color-neutral-70);
     border-radius: var(--wpx-border-radius-md);
     padding: 0 var(--wpx-spacing-xs);
 
@@ -63,17 +64,6 @@ const styles = /*css*/ `
     justify-content: center;
     font-size: 1.8rem;
     margin-top: 40px;
-}
-
-.crumb {
-    cursor: pointer;
-    color: var(--wpx-color-primary-40);
-    white-space: nowrap;
-    user-select: none;
-}
-
-.crumb:hover {
-    color: var(--wpx-color-primary-30);
 }
 `;
 
@@ -596,7 +586,7 @@ const SidebarStart = {
     //--- init()
     //-------------------------------------------------------------------
     init() {
-        this.page = document.querySelector('[data-page="start"]');
+        this.page = document.querySelector('[data-page="sidebar-start"]');
         if (!this.page) return;
         
         this.page.addEventListener('click', this.handleClick.bind(this));
@@ -968,11 +958,12 @@ const SidebarIndex = {
     //--- init()
     //-------------------------------------------------------------------
     init() {
-        this.page = document.querySelector('[data-page="index"]');
+        this.page = document.querySelector('[data-page="sidebar-index"]');
         if (!this.page) return;
 
         PanelSnippets.init();
         PanelDataSource.init();
+        DrawerPlaceholder.init();
     }
 };
 
@@ -981,15 +972,12 @@ const Addon_Docs = {
     //-------------------------------------------------------------------
     //--- init()
     //-------------------------------------------------------------------
-    init() {
-        const sidebarPage = document.body.dataset.page;
-        console.log('Sidebar Page:', sidebarPage);
-
-        switch (sidebarPage) {
-            case 'start':
+    init(page) {
+        switch (page) {
+            case 'sidebar-start':
                 SidebarStart.init();
                 break;
-            case 'index':
+            case 'sidebar-index':
                 SidebarIndex.init();
                 break;
         }
@@ -1000,12 +988,14 @@ registerPlaceholders();
 document.addEventListener('DOMContentLoaded', () => {
 
     const platform = document.body.dataset.platform;
+    const page = document.body.dataset.page;
+
     //console.log('Platform:', platform);
-    //console.log('Lang:', lang.t('startTitle'));
+    //console.log('Page:', page);
 
     switch (platform) {
         case 'docs':
-            Addon_Docs.init();
+            Addon_Docs.init(page);
             break;
     }
 
