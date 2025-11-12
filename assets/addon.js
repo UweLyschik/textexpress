@@ -207,7 +207,7 @@ const TRANSLATIONS = {
         startText1: 'Du kannst gleich loslegen.',
         startText2: 'TextExpress benötigt eine Google-Sheet Datei um Textbausteine und Einstellungen zu speichern.',
         startText3: 'Klicke auf "Neue Datei erstellen" um eine TextExpress-Datei anzulegen, oder öffne eine vorhandene Datei, die mit TextExpress erstellt wurde.',
-        fileCreate: 'Neue Datei erstellen',
+        fileCreate: 'Datei erstellen',
         fileOpen: 'Datei öffnen',
         support: 'Support',
         documentation: 'Documentation'
@@ -217,7 +217,7 @@ const TRANSLATIONS = {
         startText1: 'Du kannst gleich loslegen.',
         startText2: 'TextExpress benötigt eine Google-Sheet Datei um Textbausteine und Einstellungen zu speichern.',
         startText3: 'Klicke auf "Neue Datei erstellen" um eine TextExpress-Datei anzulegen, oder öffne eine vorhandene Datei, die mit TextExpress erstellt wurde.',
-        fileCreate: 'Neue Datei erstellen',
+        fileCreate: 'Datei erstellen',
         fileOpen: 'Datei öffnen',
         support: 'Support',
         documentation: 'Dokumentation'
