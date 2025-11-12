@@ -405,6 +405,7 @@ const styles$j = /*css*/ `
     text-decoration: none;
     white-space: nowrap;
     vertical-align: middle;
+    padding: 0 var(--wpx-spacing-sm);
     outline: 0;
     border-width: 1px;
     border-style: solid;
@@ -412,6 +413,8 @@ const styles$j = /*css*/ `
     user-select: none;
     cursor: pointer;
 }
+
+.icon-button {padding: 0;}
 
 /*------------------------------------*/
 /* --- sizes ------------------------ */
@@ -421,36 +424,30 @@ const styles$j = /*css*/ `
 :host([size="sm"]) .button {
     height: var(--wpx-control-height-sm);
     font-size: var(--wpx-font-size-sm);
-    padding: 0 var(--wpx-spacing-xs);
     border-radius: var(--wpx-border-radius-md);
 }
 :host([size="sm"]) .icon-button {
     width: var(--wpx-control-height-sm);
-    padding: 0;
 }
 
 /* +++ medium ++++++++++++++++++++++++*/
 :host([size="md"]) .button {
     height: var(--wpx-control-height-md);
     font-size: var(--wpx-font-size-md);
-    padding: 0 var(--wpx-spacing-sm);
     border-radius: var(--wpx-border-radius-md);
 }
 :host([size="md"]) .icon-button {
     width: var(--wpx-control-height-md);
-    padding: 0;
 }
 
 /* +++ large +++++++++++++++++++++++++*/
 :host([size="lg"]) .button {
     height: var(--wpx-control-height-lg);
     font-size: var(--wpx-font-size-lg);
-    padding: 0 var(--wpx-spacing-md);
     border-radius: var(--wpx-border-radius-md);
 }
 :host([size="lg"]) .icon-button {
     width: var(--wpx-control-height-lg);
-    padding: 0;
 }
 
 /*------------------------------------*/
