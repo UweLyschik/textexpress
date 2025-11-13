@@ -991,7 +991,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const platform = document.body.dataset.platform;
     const page = document.body.dataset.page;
-    alert(page);
+    alert(platform);
 
     //console.log('Platform:', platform);
     //console.log('Page:', page);
