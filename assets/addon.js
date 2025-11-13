@@ -586,6 +586,7 @@ const SidebarStart = {
     //--- init()
     //-------------------------------------------------------------------
     init() {
+        alert('START');
         this.page = document.querySelector('[data-page="sidebar-start"]');
         if (!this.page) return;
         
@@ -991,7 +992,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const platform = document.body.dataset.platform;
     const page = document.body.dataset.page;
-    alert(platform);
 
     //console.log('Platform:', platform);
     //console.log('Page:', page);
