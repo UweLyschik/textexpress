@@ -388,6 +388,27 @@ class WPX_BreadcrumbItem extends WPX_Element {
 
 customElements.define('wpx-breadcrumb-item', WPX_BreadcrumbItem);
 
+const sizeStyles = /*css*/ `
+
+/* small */
+:host([size="sm"]),
+.wpx-size-sm {
+    font-size: var(--wpx-font-size-sm);
+}
+
+/* medium */
+:host([size="md"]),
+.wpx-size-md {
+    font-size: var(--wpx-font-size-md);
+}
+
+/* large */
+:host([size="lg"]),
+.wpx-size-lg {
+    font-size: var(--wpx-font-size-lg);
+}
+`;
+
 const styles$j = /*css*/ `
 :host {
     display: inline-block;
@@ -400,54 +421,27 @@ const styles$j = /*css*/ `
     align-items: center;
     justify-content: center;
     gap: var(--wpx-spacing-xs);
+    height: var(--wpx-control-height);
     font-family: var(--wpx-font-family);
-    font-weight: 500;
+    font-size: inherit; /* von size-Attribut */
+    font-weight: 400;
     text-decoration: none;
     white-space: nowrap;
     vertical-align: middle;
-    padding: 0 var(--wpx-spacing-sm);
+    padding: 0 var(--wpx-control-padding-inline);
     outline: 0;
     border-width: 1px;
     border-style: solid;
+    border-radius: var(--wpx-control-border-radius);
     transition: all var(--wpx-transition-fast) ease;
     user-select: none;
     cursor: pointer;
 }
 
-.icon-button {padding: 0;}
-
-/*------------------------------------*/
-/* --- sizes ------------------------ */
-/*------------------------------------*/
-
-/* +++ small +++++++++++++++++++++++++*/
-:host([size="sm"]) .button {
-    height: var(--wpx-control-height-sm);
-    font-size: var(--wpx-font-size-sm);
-    border-radius: var(--wpx-border-radius-md);
-}
-:host([size="sm"]) .icon-button {
-    width: var(--wpx-control-height-sm);
-}
-
-/* +++ medium ++++++++++++++++++++++++*/
-:host([size="md"]) .button {
-    height: var(--wpx-control-height-md);
-    font-size: var(--wpx-font-size-md);
-    border-radius: var(--wpx-border-radius-md);
-}
-:host([size="md"]) .icon-button {
-    width: var(--wpx-control-height-md);
-}
-
-/* +++ large +++++++++++++++++++++++++*/
-:host([size="lg"]) .button {
-    height: var(--wpx-control-height-lg);
-    font-size: var(--wpx-font-size-lg);
-    border-radius: var(--wpx-border-radius-md);
-}
-:host([size="lg"]) .icon-button {
-    width: var(--wpx-control-height-lg);
+.icon-button {
+    width: var(--wpx-control-height);
+    aspect-ratio: 1 / 1;
+    padding: 0;
 }
 
 /*------------------------------------*/
@@ -633,7 +627,7 @@ class WPX_Button extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$j, variantStyles]);
+        this.init([styles$j, sizeStyles, variantStyles]);
     }
 
     //-------------------------------------------------------------------
