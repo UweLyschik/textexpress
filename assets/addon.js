@@ -963,6 +963,7 @@ const SidebarIndex = {
 
         PanelSnippets.init();
         PanelDataSource.init();
+        DrawerManager.init();
         DrawerPlaceholder.init();
     }
 };
