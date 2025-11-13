@@ -586,7 +586,6 @@ const SidebarStart = {
     //--- init()
     //-------------------------------------------------------------------
     init() {
-        alert('START');
         this.page = document.querySelector('[data-page="sidebar-start"]');
         if (!this.page) return;
         
@@ -618,7 +617,6 @@ const SidebarStart = {
     //--- showFilePicker()
     //-------------------------------------------------------------------
     async showFilePicker(title) {
-        console.log('DIALOG');
         await Google_UIService.showDialog({
             title: title,
             file: 'dialog-file-picker',
