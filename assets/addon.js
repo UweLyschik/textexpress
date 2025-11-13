@@ -587,6 +587,7 @@ const SidebarStart = {
     //-------------------------------------------------------------------
     init() {
         this.page = document.querySelector('[data-page="sidebar-start"]');
+        alert(this.page);
         if (!this.page) return;
         
         this.page.addEventListener('click', this.handleClick.bind(this));
