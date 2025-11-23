@@ -741,37 +741,6 @@ const PanelSnippets = {
     }
 };
 
-const PanelDataSource = {
-
-    //-------------------------------------------------------------------
-    //--- init()
-    //-------------------------------------------------------------------
-    init() {
-        this.panel = document.querySelector('#panel-datasource');        
-        this.panel.addEventListener('click', this.handleClick.bind(this));
-        this.refs = collectRefs(this.panel);
-    },
-
-    //-------------------------------------------------------------------
-    //--- handleClick()
-    //-------------------------------------------------------------------
-    handleClick(e) {
-        const action = e.target.closest('[data-action]')?.dataset.action;
-        if (!action) return;
-        this.runAction(action);
-    },
-
-    //-------------------------------------------------------------------
-    //--- runAction()
-    //-------------------------------------------------------------------
-    runAction(action) {
-        const map = {
-            'add-snippet': () => console.log('add-snippet')
-        };
-        map[action]?.();
-    }
-};
-
 const SidebarIndex = {
 
     //-------------------------------------------------------------------
@@ -782,9 +751,9 @@ const SidebarIndex = {
         if (!this.page) return;
 
         PanelSnippets.init();
-        PanelDataSource.init();
-        DrawerManager.init();
-        DrawerPlaceholder.init();
+        //PanelDataSource.init();
+        //DrawerManager.init();
+        //DrawerPlaceholder.init();
     }
 };
 
