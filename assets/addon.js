@@ -659,7 +659,7 @@ const PanelSnippets = {
         phList.innerHTML = `
             <wpx-item size="sm">
                 Platzhalter
-                <wpx-icon slot="prefix" name="braces-asterisk"></wpx-icon>
+                <wpx-icon slot="prefix" name="placeholder1"></wpx-icon>
                 <div slot="subitems">
                     ${phData.map(ph => `
                         <wpx-item size="sm" data-type="${ph.type}">
@@ -856,13 +856,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (Platform.isChrome) {
         Addon_Chrome.init();
     } else if (Platform.isDocs) {
-        alert('ADDON');
         Addon_Docs.init();
     } else {
         console.warn("Keine unterstützte Plattform erkannt");
     }
 
     //Addon_Chrome.init(); //nur zum test auf localhost
-    //Addon_Docs.init(); //nur zum test auf localhost
+    Addon_Docs.init(); //nur zum test auf localhost
 });
 //# sourceMappingURL=addon.js.map
