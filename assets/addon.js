@@ -723,12 +723,12 @@ const PanelSnippets = {
         snippetList.innerHTML = `
             ${snippetData.map(cat => `
                 <wpx-item size="sm" data-type="category">
-                    ${cat.label}
+                    ${cat.name}
                     <wpx-icon slot="prefix" name="folder"></wpx-icon>
                     <div slot="subitems">
                         ${cat.snippets.map(s => `
                             <wpx-item size="sm" data-type="snippet" data-id="${s.id}">
-                                ${s.label}
+                                ${s.name}
                                 <wpx-icon slot="prefix" name="snippet"></wpx-icon>
                             </wpx-item>
                         `).join('')}
