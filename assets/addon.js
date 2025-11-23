@@ -439,39 +439,60 @@ const SidebarStart = {
     }
 };
 
+const Platform = {
+    isChrome: !!window.chrome?.runtime?.id,
+    isDocs: typeof google !== 'undefined' && google.script
+};
+
+//-------------------------------------------------------------------
+//--- Google_SnippetService
+//-------------------------------------------------------------------
+const Google_SnippetService = {
+
+    //-------------------------------------------------------------------
+    //--- loadSnippets(ss)
+    //-------------------------------------------------------------------
+    loadSnippets(sheetId) {
+        return new Promise((resolve, reject) => {
+        google.script.run
+            .withSuccessHandler(resolve)
+            .withFailureHandler(reject)
+            .SnippetService_loadSnippets(sheetId);
+        });
+    }
+};
+
 const ModelSnippets = {
 
     snippets: [],
-    test: `
-        {{choice: name=gender options=m;w;d}}   // einfache key=value Parameter ohne Quotes
-        {{input: required}}                     // bool-Flag ohne Wert
-        {{input: required=false}}               // key=value mit bool-ähnlichem Wert
-        {{field: label="Vor- und Nachname"}}    // Wert mit Leerzeichen in Quotes
-        {{note: text='Hallo Welt' multiline}}   // Einzelwert in Quotes + bool-Flag
-        {{doc: value=item.id}}                  // Punktnotation im Wert
-        {{cursor}}                              // einfacher Platzhalter ohne Parameter
-    `,
 
     //-------------------------------------------------------------------
     //--- load()
     //-------------------------------------------------------------------
-    load() {
-        //this.snippets = await SheetsService.getAllSnippets();
-        this.snippets = [
-            {
-                label: "Anreden",
-                snippets: [
-                    {id: "1", label: "Note: Test", content: "{{form.text}} sdf {{note: text=hallo}}"},
-                    {id: "2", label: "Platzhalter-Test", content: this.test}
-                ]
-            },
-            {
-                label: "Einleitungen",
-                snippets: [
-                    {id: "3", label: "Mit freundlichen Grüßen", content: "Mit freundlichen Grüßen\n{{#Name: bla=kkk}}"}
-                ]
-            }
-        ];
+    async load() {
+        if (Platform.isChrome) ; else if (Platform.isDocs) {
+            const sheetId = '1MkwM59_YccASEHgCm_5pb-71sk55LBLz_PsuXq8Ykz0';
+            this.snippets = await Google_SnippetService.loadSnippets(sheetId);
+            alert(this.snippets);
+
+        } else {
+            console.warn("Textbausteine konnten nicht geladen werden!");
+            this.snippets = [
+                {
+                    label: "Anreden",
+                    snippets: [
+                        {id: "1", label: "Note: Test", content: "{{form.text}} sdf {{note: text=hallo}}"},
+                        {id: "2", label: "Platzhalter-Test", content: "BLA BLA"}
+                    ]
+                },
+                {
+                    label: "Einleitungen",
+                    snippets: [
+                        {id: "3", label: "Mit freundlichen Grüßen", content: "Mit freundlichen Grüßen\n{{#Name: bla=kkk}}"}
+                    ]
+                }
+            ];
+        }
     },
 
     //-------------------------------------------------------------------
@@ -844,11 +865,6 @@ const Addon_Docs = {
         //lang.updateUI();
         console.log("Docs Addon initialized");
     }
-};
-
-const Platform = {
-    isChrome: !!window.chrome?.runtime?.id,
-    isDocs: typeof google !== 'undefined' && google.script
 };
 
 document.addEventListener('DOMContentLoaded', () => {
