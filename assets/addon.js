@@ -351,9 +351,9 @@ const Addon_Chrome = {
 };
 
 //-------------------------------------------------------------------
-//--- Google_UIService
+//--- GS_UIService
 //-------------------------------------------------------------------
-const Google_UIService = {
+const GS_UIService = {
 
     //----------------------------------------------------
     //--- showDialog()
@@ -429,7 +429,7 @@ const SidebarStart = {
     //--- showFilePicker()
     //-------------------------------------------------------------------
     async showFilePicker(title) {
-        await Google_UIService.showDialog({
+        await GS_UIService.showDialog({
             title: title,
             file: 'dialog-file-picker',
             data: {hint: 'TEST'},
@@ -445,9 +445,9 @@ const Platform = {
 };
 
 //-------------------------------------------------------------------
-//--- Google_SnippetService
+//--- GS_SnippetService
 //-------------------------------------------------------------------
-const Google_SnippetService = {
+const GS_SnippetService = {
 
     //-------------------------------------------------------------------
     //--- loadSnippets(ss)
@@ -472,8 +472,8 @@ const ModelSnippets = {
     async load() {
         if (Platform.isChrome) ; else if (Platform.isDocs) {
             const sheetId = '1MkwM59_YccASEHgCm_5pb-71sk55LBLz_PsuXq8Ykz0';
-            this.snippets = await Google_SnippetService.loadSnippets(sheetId);
-            alert(this.snippets);
+            this.snippets = await GS_SnippetService.loadSnippets(sheetId);
+            console.log(this.snippets);
 
         } else {
             console.warn("Textbausteine konnten nicht geladen werden!");
@@ -704,8 +704,8 @@ const PanelSnippets = {
     //-------------------------------------------------------------------
     //--- listSnippets()
     //-------------------------------------------------------------------
-    listSnippets() {
-        ModelSnippets.load();
+    async listSnippets() {
+        //console.log(await ModelSnippets.load());
         const snippetData = ModelSnippets.getAll();
         const snippetList = this.refs['list-snippets'];
 
@@ -878,6 +878,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     //Addon_Chrome.init(); //nur zum test auf localhost
-    Addon_Docs.init(); //nur zum test auf localhost
+    //Addon_Docs.init(); //nur zum test auf localhost
 });
 //# sourceMappingURL=addon.js.map
