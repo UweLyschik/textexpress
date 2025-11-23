@@ -43,7 +43,7 @@ class WPX_Element extends HTMLElement {
 
         const css = [baseStyles, styles].flat().filter(Boolean);
         const style = document.createElement('style');
-
+        
         style.textContent = css.join('\n');
         this.shadowRoot.appendChild(style);
     }
@@ -56,7 +56,123 @@ class WPX_Element extends HTMLElement {
         tmpl.innerHTML = html;
         this.shadowRoot.append(tmpl.content.cloneNode(true));
     }
+
+    //-------------------------------------------------------------------
+    //--- root()
+    //-------------------------------------------------------------------
+    get root() {
+        return this.shadowRoot;
+    }
 }
+
+const styles$n = /*css*/ `
+:host {
+    display: inline-flex;
+    align-items: center;
+    gap: 0rem;
+}
+
+::slotted([slot="separator"]) {
+    display: inline-flex;
+    align-items: center;
+}
+`;
+
+//-------------------------------------------------------------------
+//--- Element: WPX_Breadcrumb
+//-------------------------------------------------------------------
+class WPX_Breadcrumb extends WPX_Element {
+
+    //-------------------------------------------------------------------
+    //--- constructor()
+    //-------------------------------------------------------------------
+    constructor() {
+        super();
+        this.init([styles$n]);
+    }
+
+    //-------------------------------------------------------------------
+    //--- connectedCallback()
+    //-------------------------------------------------------------------
+    connectedCallback() {
+        this.render();
+    }
+
+    //-------------------------------------------------------------------
+    //--- render()
+    //-------------------------------------------------------------------
+    render() {
+        this.setHtml(`<slot></slot>`);
+    }
+}
+
+customElements.define('wpx-breadcrumb', WPX_Breadcrumb);
+
+const styles$m = /*css*/ `
+:host {
+    display: inline-flex;
+    align-items: center;
+}
+`;
+
+//-------------------------------------------------------------------
+//--- Element: WPX_BreadcrumbItem
+//-------------------------------------------------------------------
+class WPX_BreadcrumbItem extends WPX_Element {
+
+    //-------------------------------------------------------------------
+    //--- constructor()
+    //-------------------------------------------------------------------
+    constructor() {
+        super();
+        this.init([styles$m]);
+    }
+
+    //-------------------------------------------------------------------
+    //--- connectedCallback()
+    //-------------------------------------------------------------------
+    connectedCallback() {
+        this.render();
+    }
+
+    //-------------------------------------------------------------------
+    //--- render()
+    //-------------------------------------------------------------------
+    render() {
+        this.getAttribute('href');
+        const isLast = this === this.parentElement?.lastElementChild;
+
+        this.setHtml(`
+            <wpx-button fill="none"><slot></slot></wpx-button>
+            ${isLast ? '' : `
+                <wpx-icon name="chevron-right"></wpx-icon>
+            `}
+        `);
+    }
+}
+
+customElements.define('wpx-breadcrumb-item', WPX_BreadcrumbItem);
+
+const sizeStyles = /*css*/ `
+
+/* small */
+:host([size="sm"]),
+.wpx-size-sm {
+    font-size: var(--wpx-font-size-sm);
+}
+
+/* medium */
+:host([size="md"]),
+.wpx-size-md {
+    font-size: var(--wpx-font-size-md);
+}
+
+/* large */
+:host([size="lg"]),
+.wpx-size-lg {
+    font-size: var(--wpx-font-size-lg);
+}
+`;
 
 const variantStyles = /*css*/ `
 
@@ -126,290 +242,7 @@ const variantStyles = /*css*/ `
 }
 `;
 
-const styles$m = /*css*/ `
-:host {
-    display: block;
-}
-
-.alert {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: var(--wpx-spacing-sm);
-    border-width: 1px;
-    border-style: solid;
-    padding: var(--wpx-spacing-md);
-}
-
-:host(:not([open])) .alert {
-  display: none;
-}
-
-/*------------------------------------*/
-/* --- fill: solid ------------------ */
-/*------------------------------------*/
-:host([fill="solid"]) .alert {
-    background-color: var(--wpx-color-fill-normal);
-    border-color: var(--wpx-color-border-normal);
-    color: var(--wpx-color-on-normal);
-}
-
-/*------------------------------------*/
-/* --- fill: filled ----------------- */
-/*------------------------------------*/
-:host([fill="filled"]) .alert {
-    background-color: var(--wpx-color-fill-weak);
-    border-color: var(--wpx-color-border-normal);
-    color: var(--wpx-color-on-normal);
-}
-
-/*------------------------------------*/
-/* --- sizes ------------------------ */
-/*------------------------------------*/
-:host([size="sm"]) .alert {
-    font-size: var(--wpx-font-size-sm);
-    border-radius: var(--wpx-border-radius-md);
-}
-
-:host([size="md"]) .alert {
-    font-size: var(--wpx-font-size-md);
-    border-radius: var(--wpx-border-radius-md);
-}
-
-:host([size="lg"]) .alert {
-    font-size: var(----wpx-font-size-lg);
-    border-radius: var(--wpx-border-radius-md);
-}
-`;
-
-//-------------------------------------------------------------------
-//--- Element: WPX_Alert
-//-------------------------------------------------------------------
-class WPX_Alert extends WPX_Element {
-
-    static get observedAttributes() {
-        return ['open', 'variant', 'fill', 'size', 'duration'];
-    }
-
-// #region Attributes
-
-    //-------------------------------------------------------------------
-    //--- Attribute: open
-    //-------------------------------------------------------------------
-    get open() {return this.hasAttribute('open');}
-    set open(value) {
-        value ? this.setAttribute('open', '') : this.removeAttribute('open');
-    }
-
-    //-------------------------------------------------------------------
-    //--- Attribute: variant
-    //-------------------------------------------------------------------
-    get variant() {return this.getAttribute('variant');}
-    set variant(value) {this.setAttribute('variant', value);}
-
-    //-------------------------------------------------------------------
-    //--- Attribute: fill
-    //-------------------------------------------------------------------
-    get fill() {return this.getAttribute('fill');}
-    set fill(value) {this.setAttribute('fill', value);}
-
-    //-------------------------------------------------------------------
-    //--- Attribute: size
-    //-------------------------------------------------------------------
-    get size() {return this.getAttribute('size');}
-    set size(value) {this.setAttribute('size', value);}
-
-    //-------------------------------------------------------------------
-    //--- Attribute: duration
-    //-------------------------------------------------------------------
-    get duration() {return this.getAttribute('duration') || '0';}
-    set duration(value) {this.setAttribute('duration', value);}
-
-// #endregion
-
-    //-------------------------------------------------------------------
-    //--- constructor()
-    //-------------------------------------------------------------------
-    constructor() {
-        super();
-        this.init([styles$m, variantStyles]);
-        this.timer = null;
-    }
-
-    //-------------------------------------------------------------------
-    //--- connectedCallback()
-    //-------------------------------------------------------------------
-    connectedCallback() {
-        if (!this.variant) this.variant = 'primary';
-        if (!this.fill) this.fill = 'filled';
-        if (!this.size) this.size = 'md';
-
-        this.render();
-    }
-
-    //-------------------------------------------------------------------
-    //--- render()
-    //-------------------------------------------------------------------
-    render() {
-        this.setHtml(`
-            <div class="alert">
-                <div class="icon"><slot name="icon"></slot></div>
-                <div class="message"><slot></slot></div>
-            </div>
-        `);
-    }
-
-    //-------------------------------------------------------------------
-    //--- show()
-    //-------------------------------------------------------------------
-    show() {
-        this.open = true;
-
-        const duration = parseInt(this.duration, 10);
-        if (duration > 0) {
-            clearTimeout(this.timer);
-            this.timer = setTimeout(() => this.hide(), duration);
-        }
-    }
-
-    //-------------------------------------------------------------------
-    //--- hide()
-    //-------------------------------------------------------------------
-    hide() {
-        this.open = false;
-        clearTimeout(this.timer);
-    }
-
-    //-------------------------------------------------------------------
-    //--- toast()
-    //-------------------------------------------------------------------
-    toast() {
-        let stack = document.querySelector('.wpx-toast-stack');
-        
-        if (!stack) {
-            stack = document.createElement('div');
-            stack.className = 'wpx-toast-stack';
-            document.body.appendChild(stack);
-        }
-
-        const toast = this.cloneNode(true);
-        stack.appendChild(toast);
-        toast.show();
-    }
-}
-
-customElements.define('wpx-alert', WPX_Alert);
-
 const styles$l = /*css*/ `
-:host {
-    display: inline-flex;
-    align-items: center;
-    gap: 0rem;
-}
-
-::slotted([slot="separator"]) {
-    display: inline-flex;
-    align-items: center;
-}
-`;
-
-//-------------------------------------------------------------------
-//--- Element: WPX_Breadcrumb
-//-------------------------------------------------------------------
-class WPX_Breadcrumb extends WPX_Element {
-
-    //-------------------------------------------------------------------
-    //--- constructor()
-    //-------------------------------------------------------------------
-    constructor() {
-        super();
-        this.init([styles$l]);
-    }
-
-    //-------------------------------------------------------------------
-    //--- connectedCallback()
-    //-------------------------------------------------------------------
-    connectedCallback() {
-        this.render();
-    }
-
-    //-------------------------------------------------------------------
-    //--- render()
-    //-------------------------------------------------------------------
-    render() {
-        this.setHtml(`<slot></slot>`);
-    }
-}
-
-customElements.define('wpx-breadcrumb', WPX_Breadcrumb);
-
-const styles$k = /*css*/ `
-:host {
-    display: inline-flex;
-    align-items: center;
-}
-`;
-
-//-------------------------------------------------------------------
-//--- Element: WPX_BreadcrumbItem
-//-------------------------------------------------------------------
-class WPX_BreadcrumbItem extends WPX_Element {
-
-    //-------------------------------------------------------------------
-    //--- constructor()
-    //-------------------------------------------------------------------
-    constructor() {
-        super();
-        this.init([styles$k]);
-    }
-
-    //-------------------------------------------------------------------
-    //--- connectedCallback()
-    //-------------------------------------------------------------------
-    connectedCallback() {
-        this.render();
-    }
-
-    //-------------------------------------------------------------------
-    //--- render()
-    //-------------------------------------------------------------------
-    render() {
-        this.getAttribute('href');
-        const isLast = this === this.parentElement?.lastElementChild;
-
-        this.setHtml(`
-            <wpx-button fill="none"><slot></slot></wpx-button>
-            ${isLast ? '' : `
-                <wpx-icon name="chevron-right"></wpx-icon>
-            `}
-        `);
-    }
-}
-
-customElements.define('wpx-breadcrumb-item', WPX_BreadcrumbItem);
-
-const sizeStyles = /*css*/ `
-
-/* small */
-:host([size="sm"]),
-.wpx-size-sm {
-    font-size: var(--wpx-font-size-sm);
-}
-
-/* medium */
-:host([size="md"]),
-.wpx-size-md {
-    font-size: var(--wpx-font-size-md);
-}
-
-/* large */
-:host([size="lg"]),
-.wpx-size-lg {
-    font-size: var(--wpx-font-size-lg);
-}
-`;
-
-const styles$j = /*css*/ `
 :host {
     display: inline-block;
     position: relative;
@@ -627,7 +460,7 @@ class WPX_Button extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$j, sizeStyles, variantStyles]);
+        this.init([styles$l, sizeStyles, variantStyles]);
     }
 
     //-------------------------------------------------------------------
@@ -683,8 +516,173 @@ class WPX_Button extends WPX_Element {
 
 customElements.define('wpx-button', WPX_Button);
 
+const styles$k = /*css*/ `
+:host {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: inherit; /* von size-Attribut */
+    border-width: 1px;
+    border-style: solid;
+    border-radius: var(--wpx-border-radius-md);
+    padding: 0.75em var(--wpx-spacing-md);
+}
+
+:host(:not([open])) {
+  display: none;
+}
+
+.icon {
+    display: flex;
+    align-items: center;
+}
+
+/*------------------------------------*/
+/* --- fill: solid ------------------ */
+/*------------------------------------*/
+:host([fill="solid"]) {
+    background-color: var(--wpx-color-fill-normal);
+    border-color: var(--wpx-color-border-normal);
+    color: var(--wpx-color-on-normal);
+}
+
+/*------------------------------------*/
+/* --- fill: filled ----------------- */
+/*------------------------------------*/
+:host([fill="filled"]) {
+    background-color: var(--wpx-color-fill-weak);
+    border-color: var(--wpx-color-border-weak);
+    color: var(--wpx-color-on-normal);
+}
+
+/*------------------------------------*/
+/* --- slots ------------------------ */
+/*------------------------------------*/
+::slotted([slot="icon"]) {
+    margin-right: calc(var(--wpx-control-padding-inline) / 2);
+    font-size: 1.1em;
+}
+`;
+
+//-------------------------------------------------------------------
+//--- Element: WPX_Callout
+//-------------------------------------------------------------------
+class WPX_Callout extends WPX_Element {
+
+    static get observedAttributes() {
+        return ['open', 'variant', 'fill', 'size', 'duration'];
+    }
+
+// #region Attributes
+
+    //-------------------------------------------------------------------
+    //--- Attribute: open
+    //-------------------------------------------------------------------
+    get open() {return this.hasAttribute('open');}
+    set open(value) {
+        value ? this.setAttribute('open', '') : this.removeAttribute('open');
+    }
+
+    //-------------------------------------------------------------------
+    //--- Attribute: variant
+    //-------------------------------------------------------------------
+    get variant() {return this.getAttribute('variant');}
+    set variant(value) {this.setAttribute('variant', value);}
+
+    //-------------------------------------------------------------------
+    //--- Attribute: fill
+    //-------------------------------------------------------------------
+    get fill() {return this.getAttribute('fill');}
+    set fill(value) {this.setAttribute('fill', value);}
+
+    //-------------------------------------------------------------------
+    //--- Attribute: size
+    //-------------------------------------------------------------------
+    get size() {return this.getAttribute('size');}
+    set size(value) {this.setAttribute('size', value);}
+
+    //-------------------------------------------------------------------
+    //--- Attribute: duration
+    //-------------------------------------------------------------------
+    get duration() {return this.getAttribute('duration') || '0';}
+    set duration(value) {this.setAttribute('duration', value);}
+
+// #endregion
+
+    //-------------------------------------------------------------------
+    //--- constructor()
+    //-------------------------------------------------------------------
+    constructor() {
+        super();
+        this.init([styles$k, sizeStyles, variantStyles]);
+        this.timer = null;
+    }
+
+    //-------------------------------------------------------------------
+    //--- connectedCallback()
+    //-------------------------------------------------------------------
+    connectedCallback() {
+        if (!this.variant) this.variant = 'primary';
+        if (!this.fill) this.fill = 'solid';
+        if (!this.size) this.size = 'md';
+
+        this.render();
+    }
+
+    //-------------------------------------------------------------------
+    //--- render()
+    //-------------------------------------------------------------------
+    render() {
+        this.setHtml(`
+            <div class="icon"><slot name="icon"></slot></div>
+            <div class="message"><slot></slot></div>
+        `);
+    }
+
+    //-------------------------------------------------------------------
+    //--- show()
+    //-------------------------------------------------------------------
+    show() {
+        this.open = true;
+
+        const duration = parseInt(this.duration, 10);
+        if (duration > 0) {
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => this.hide(), duration);
+        }
+    }
+
+    //-------------------------------------------------------------------
+    //--- hide()
+    //-------------------------------------------------------------------
+    hide() {
+        this.open = false;
+        clearTimeout(this.timer);
+    }
+
+    //-------------------------------------------------------------------
+    //--- toast()
+    //-------------------------------------------------------------------
+    toast() {
+        let stack = document.querySelector('.wpx-toast-stack');
+        
+        if (!stack) {
+            stack = document.createElement('div');
+            stack.className = 'wpx-toast-stack';
+            document.body.appendChild(stack);
+        }
+
+        const toast = this.cloneNode(true);
+        stack.appendChild(toast);
+        toast.show();
+    }
+}
+
+customElements.define('wpx-callout', WPX_Callout);
+
 const controlStyles = /*css*/ `
 .control-label {
+    font-weight: 500;
     color: var(--wpx-color-neutral-20);
 }
 
@@ -692,9 +690,22 @@ const controlStyles = /*css*/ `
     font-size: var(--wpx-font-size-sm);
     color: var(--wpx-color-neutral-50);
 }
+
+/*------------------------------------*/
+/* --- placeholders ------------------*/
+/*------------------------------------*/
+input::placeholder {
+    color: var(--wpx-color-neutral-0);
+    opacity: 0.4;
+}
+
+textarea::placeholder {
+    color: var(--wpx-color-neutral-0);
+    opacity: 0.4;
+}
 `;
 
-const styles$i = /*css*/ `
+const styles$j = /*css*/ `
 :host {
     display: inline-flex;
     flex-direction: column;
@@ -817,7 +828,7 @@ class WPX_Checkbox extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$i, controlStyles]);
+        this.init([styles$j, controlStyles]);
     }
 
     //-------------------------------------------------------------------
@@ -875,7 +886,7 @@ class WPX_Checkbox extends WPX_Element {
 
 customElements.define('wpx-checkbox', WPX_Checkbox);
 
-const styles$h = /*css*/ `
+const styles$i = /*css*/ `
 :host {
     display: block;
 }
@@ -988,7 +999,7 @@ class WPX_Details extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$h]);
+        this.init([styles$i]);
     }
 
     //-------------------------------------------------------------------
@@ -1038,7 +1049,7 @@ class WPX_Details extends WPX_Element {
 
 customElements.define('wpx-details', WPX_Details);
 
-const styles$g = /*css*/ `
+const styles$h = /*css*/ `
 :host {
     --width: 600px;
     display: none;
@@ -1112,7 +1123,7 @@ class WPX_Dialog extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$g]);
+        this.init([styles$h]);
     }
 
     //-------------------------------------------------------------------
@@ -1161,7 +1172,7 @@ class WPX_Dialog extends WPX_Element {
 
 customElements.define('wpx-dialog', WPX_Dialog);
 
-const styles$f = /*css*/ `
+const styles$g = /*css*/ `
 :host {
     --color: var(--wpx-color-neutral-80);
     --width: 1px;
@@ -1183,7 +1194,7 @@ class WPX_Divider extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$f]);
+        this.init([styles$g]);
     }
 
     //-------------------------------------------------------------------
@@ -1196,7 +1207,7 @@ class WPX_Divider extends WPX_Element {
 
 customElements.define('wpx-divider', WPX_Divider);
 
-const styles$e = /*css*/ `
+const styles$f = /*css*/ `
 :host {
     --size: 300px;
     position: fixed;
@@ -1333,7 +1344,7 @@ class WPX_Drawer extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$e]);
+        this.init([styles$f]);
         this.onKeyDown = this.onKeyDown.bind(this);
     }
 
@@ -1407,12 +1418,14 @@ class WPX_Drawer extends WPX_Element {
 
 customElements.define('wpx-drawer', WPX_Drawer);
 
-const styles$d = /*css*/ `
+const styles$e = /*css*/ `
 :host {
     display: inline-block;
-    position: relative;
 }
 
+/*------------------------------------*/
+/* --- Popup ------------------------ */
+/*------------------------------------*/
 :host wpx-popup {
     min-width: 150px;
     background-color: var(--wpx-color-neutral-100);
@@ -1424,7 +1437,7 @@ const styles$d = /*css*/ `
 }
 
 /*------------------------------------*/
-/* --- Animations ------------------- */
+/* --- Popup Animations ------------- */
 /*------------------------------------*/
 :host wpx-popup {
     opacity: 0;
@@ -1451,7 +1464,7 @@ class WPX_Dropdown extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$d]);
+        this.init([styles$e]);
     }
 
     //-------------------------------------------------------------------
@@ -1492,18 +1505,198 @@ class WPX_Dropdown extends WPX_Element {
 
 customElements.define('wpx-dropdown', WPX_Dropdown);
 
+const styles$d = /*css*/ `
+:host {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--wpx-spacing-xs);
+}
+
+.media {
+    display: block;
+    font-size: 2.25rem;
+    color: var(--wpx-color-neutral-70);
+}
+
+.description {
+    color: var(--wpx-color-neutral-60);
+}
+`;
+
+//-------------------------------------------------------------------
+//--- Element: WPX_Empty
+//-------------------------------------------------------------------
+class WPX_Empty extends WPX_Element {
+
+    static get observedAttributes() {
+        return ['description', 'disabled'];
+    }
+
+// #region Attributes
+
+    //-------------------------------------------------------------------
+    //--- Attribute: description
+    //-------------------------------------------------------------------
+    get description() {return this.getAttribute('description') || 'No Data';}
+    set description(value) {this.setAttribute('description', value);}
+    
+// #endregion
+
+    //-------------------------------------------------------------------
+    //--- constructor()
+    //-------------------------------------------------------------------
+    constructor() {
+        super();
+        this.init([styles$d]);
+    }
+
+    //-------------------------------------------------------------------
+    //--- connectedCallback()
+    //-------------------------------------------------------------------
+    connectedCallback() {
+        this.render();
+    }
+
+    //-------------------------------------------------------------------
+    //--- render()
+    //-------------------------------------------------------------------
+    render() {
+        this.setHtml(`
+            <slot name="media" class="media">
+                <wpx-icon name="drawer-empty"></wpx-icon>
+            </slot>
+            <slot name="description" class="description">
+                ${this.description}
+            </slot>
+            <slot class="content"></slot>
+        `);
+    }
+}
+
+customElements.define('wpx-empty', WPX_Empty);
+
 const styles$c = /*css*/ `
 :host {
     display: inline-block;
     width: 1em;
     height: 1em;
+    vertical-align: middle;
 }
 svg {
     width: 100%;
     height: 100%;
-    fill: currentColor;
+    fill: currentColor; /* Farbe übernimmt Textfarbe */
 }
 `;
+
+const icons = {
+    check: {
+        vb: '0 0 16 16',
+        svg: `
+            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+        `
+    },
+    check_lg: {
+        vb: '0 0 16 16',
+        svg: `
+            <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+        `
+    },
+    chevron_left: {
+        vb: '0 0 16 16',
+        svg: `
+            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+        `
+    },
+    chevron_right: {
+        vb: '0 0 16 16',
+        svg: `
+            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+        `
+    },
+    chevron_up: {
+        vb: '0 0 16 16',
+        svg: `
+            <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"/>
+        `
+    },
+    chevron_down: {
+        vb: '0 0 16 16',
+        svg: `
+            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
+        `
+    },
+    cross: {
+        vb: '0 0 16 16',
+        svg: `
+            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+        `
+    },
+    copy: {
+        vb: '0 0 16 16',
+        svg: `
+            <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"/>
+        `
+    },
+    drawer_empty: {
+        vb: '0 0 24 24',
+        svg: `
+            <path d="M23.811,11.989l-1.668-8.008c-.388-1.86-1.808-3.292-3.577-3.783-.163-.115-1.141-.198-1.319-.198H6.752c-.178,0-1.155,.082-1.318,.197-1.769,.491-3.189,1.922-3.577,3.783L.189,11.989c-.125,.602-.189,1.22-.189,1.836v5.175c0,2.757,2.243,5,5,5h14c2.757,0,5-2.243,5-5v-5.175c0-.614-.063-1.231-.189-1.836Zm-3.626-7.601l1.586,7.612h-1.936l-.834-4.59V2.581c.589,.428,1.029,1.058,1.185,1.807Zm-3.185,1.612H7V2h10V6Zm-10.075,2h10.15l.727,4H6.198l.727-4Zm-3.11-3.612c.156-.749,.595-1.38,1.185-1.807V7.41l-.835,4.59h-1.936l1.586-7.612Zm15.185,17.612H5c-1.654,0-3-1.346-3-3v-5H22v5c0,1.654-1.346,3-3,3Zm-4-4c0,.552-.447,1-1,1h-4c-.552,0-1-.448-1-1s.448-1,1-1h4c.553,0,1,.448,1,1Z"/>
+        `
+    },
+    eye: {
+        vb: '0 0 24 24',
+        svg: `
+            <path d="M23.821,11.181v0C22.943,9.261,19.5,3,12,3S1.057,9.261.179,11.181a1.969,1.969,0,0,0,0,1.64C1.057,14.739,4.5,21,12,21s10.943-6.261,11.821-8.181A1.968,1.968,0,0,0,23.821,11.181ZM12,19c-6.307,0-9.25-5.366-10-6.989C2.75,10.366,5.693,5,12,5c6.292,0,9.236,5.343,10,7C21.236,13.657,18.292,19,12,19Z"/><path d="M12,7a5,5,0,1,0,5,5A5.006,5.006,0,0,0,12,7Zm0,8a3,3,0,1,1,3-3A3,3,0,0,1,12,15Z"/></g>
+        `
+    },
+    folder: {
+        vb: '0 0 24 24',
+        svg: `
+            <path d="M19,3H12.472a1.019,1.019,0,0,1-.447-.1L8.869,1.316A3.014,3.014,0,0,0,7.528,1H5A5.006,5.006,0,0,0,0,6V18a5.006,5.006,0,0,0,5,5H19a5.006,5.006,0,0,0,5-5V8A5.006,5.006,0,0,0,19,3ZM5,3H7.528a1.019,1.019,0,0,1,.447.1l3.156,1.579A3.014,3.014,0,0,0,12.472,5H19a3,3,0,0,1,2.779,1.882L2,6.994V6A3,3,0,0,1,5,3ZM19,21H5a3,3,0,0,1-3-3V8.994l20-.113V18A3,3,0,0,1,19,21Z"/>
+        `
+    },
+    gear: {
+        vb: '0 0 16 16',
+        svg: `
+            <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0"/>
+            <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z"/>
+
+        `
+    },
+    snippet: {
+        vb: '0 0 24 24',
+        svg: `
+            <path d="M21,0H3C1.35,0,0,1.35,0,3V24H24V3c0-1.65-1.35-3-3-3Zm1,22H2V3c0-.55,.45-1,1-1H21c.55,0,1,.45,1,1V22Zm-6-11H5v-2h11v2Zm-3-4H5v-2H13v2ZM5,13h14v2H5v-2Zm0,4h4v2H5v-2Z"/>
+        `
+    },
+    table: {
+        vb: '0 0 16 16',
+        svg: `
+        <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 2h-4v3h4zm0 4h-4v3h4zm0 4h-4v3h3a1 1 0 0 0 1-1zm-5 3v-3H6v3zm-5 0v-3H1v2a1 1 0 0 0 1 1zm-4-4h4V8H1zm0-4h4V4H1zm5-3v3h4V4zm4 4H6v3h4z"/>
+        `
+    },
+    user: {
+        vb: '0 0 24 24',
+        svg: `
+            <path d="M16.043,14H7.957A4.963,4.963,0,0,0,3,18.957V24H21V18.957A4.963,4.963,0,0,0,16.043,14Z"/>
+            <circle cx="12" cy="6" r="6"/>
+        `
+    },
+    menu_dots_vertical: {
+        vb: '0 0 16 16',
+        svg: `
+            <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+        `
+    },
+    placeholder1: {
+        vb: '0 0 16 16',
+        svg: `
+            <path fill-rule="evenodd" d="M1.114 8.063V7.9c1.005-.102 1.497-.615 1.497-1.6V4.503c0-1.094.39-1.538 1.354-1.538h.273V2h-.376C2.25 2 1.49 2.759 1.49 4.352v1.524c0 1.094-.376 1.456-1.49 1.456v1.299c1.114 0 1.49.362 1.49 1.456v1.524c0 1.593.759 2.352 2.372 2.352h.376v-.964h-.273c-.964 0-1.354-.444-1.354-1.538V9.663c0-.984-.492-1.497-1.497-1.6M14.886 7.9v.164c-1.005.103-1.497.616-1.497 1.6v1.798c0 1.094-.39 1.538-1.354 1.538h-.273v.964h.376c1.613 0 2.372-.759 2.372-2.352v-1.524c0-1.094.376-1.456 1.49-1.456v-1.3c-1.114 0-1.49-.362-1.49-1.456V4.352C14.51 2.759 13.75 2 12.138 2h-.376v.964h.273c.964 0 1.354.444 1.354 1.538V6.3c0 .984.492 1.497 1.497 1.6M7.5 11.5V9.207l-1.621 1.621-.707-.707L6.792 8.5H4.5v-1h2.293L5.172 5.879l.707-.707L7.5 6.792V4.5h1v2.293l1.621-1.621.707.707L9.208 7.5H11.5v1H9.207l1.621 1.621-.707.707L8.5 9.208V11.5z"/>
+        `
+    },
+};
 
 //-------------------------------------------------------------------
 //--- Element: WPX_Icon
@@ -1519,7 +1712,7 @@ class WPX_Icon extends WPX_Element {
     //-------------------------------------------------------------------
     //--- Attribute: name
     //-------------------------------------------------------------------
-    get name() {return this.getAttribute('name') || 'star';}
+    get name() {return this.getAttribute('name') || 'user';}
     set name(value) {this.setAttribute('name', value);}
     
 // #endregion
@@ -1542,23 +1735,26 @@ class WPX_Icon extends WPX_Element {
     //-------------------------------------------------------------------
     //--- render()
     //-------------------------------------------------------------------
-    async render() {
-        const url = `https://cdn.jsdelivr.net/npm/bootstrap-icons/icons/${this.name}.svg`;
+    render() {
+        const name = this.name.replace(/-/g, "_");
 
-        try {
-            const resp = await fetch(url);
-            const svg = await resp.text();
-
-            // SVG-String in DOM-Element parsen
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(svg, "image/svg+xml");
-            const svgEl = doc.documentElement;
-
-            this.shadowRoot.appendChild(svgEl);
-        } catch (err) {
-            console.error("WPX_Icon Fehler:", err);
-            this.shadowRoot.innerHTML = `<span style="color:red">?</span>`;
+        if (icons[name]) {
+            this.setHtml(this.getSvg(icons[name]));
+        } else {
+            this.setHtml(`<span style="color: red">?</span>`);
+            console.error('Icon not found:', name);
         }
+    }
+
+    //-------------------------------------------------------------------
+    //--- getSvg(icon)
+    //-------------------------------------------------------------------
+    getSvg(icon) {
+         return `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="${icon.vb}">
+                ${icon.svg}
+            </svg>
+        `;
     }
 }
 
@@ -1646,13 +1842,20 @@ const styles$a = /*css*/ `
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: var(--wpx-spacing-xs);
+    gap: var(--wpx-spacing-sm);
+    height: var(--wpx-control-height);
     font-family: var(--wpx-font-family);
+    font-size: inherit; /* von size-Attribut */
     background-color: var(--wpx-color-neutral-100);
     border: 1px solid var(--wpx-control-border-color);
-    border-radius: var(--wpx-border-radius-sm);
+    border-radius: var(--wpx-control-border-radius);
+    padding: 0 var(--wpx-spacing-sm);
     transition: all var(--wpx-transition-fast) ease;
     overflow: hidden;
+}
+
+.textfield:hover {
+    border-color: var(--wpx-color-primary-50);
 }
 
 .textfield:focus-within {
@@ -1667,32 +1870,9 @@ input {
     width: 100%;
     height: 100%; 
     border: none;
+    padding: 0;
     outline: 0;
     background: transparent;
-    padding: 0 10px;
-}
-
-input::placeholder {
-    color: var(--wpx-color-neutral-0);
-    opacity: 0.4;
-}
-
-/*------------------------------------*/
-/* --- sizes ------------------------ */
-/*------------------------------------*/
-:host([size="sm"]) .textfield {
-    height: var(--wpx-control-height-sm);
-    font-size: var(--wpx-font-size-sm);
-}
-
-:host([size="md"]) .textfield {
-    height: var(--wpx-control-height-md);
-    font-size: var(--wpx-font-size-md);
-}
-
-:host([size="lg"]) .textfield {
-    height: var(--wpx-control-height-lg);
-    font-size: var(--wpx-font-size-lg);
 }
 
 /*------------------------------------*/
@@ -1709,9 +1889,15 @@ input::placeholder {
     border-radius: var(--wpx-border-radius-pill);
 }
 
+/*------------------------------------*/
+/* --- slots -------------------------*/
+/*------------------------------------*/
+::slotted([slot="prefix"]) {flex: 0 0 auto;}
+::slotted([slot="suffix"]) {flex: 0 0 auto;}
+
 ::slotted(wpx-icon[slot="prefix"]),
 ::slotted(wpx-icon[slot="suffix"]) {
-    color: var(--wpx-color-neutral-60);
+    color: var(--wpx-color-neutral-50);
 }
 `;
 
@@ -1721,7 +1907,7 @@ input::placeholder {
 class WPX_Input extends WPX_Element {
 
     static get observedAttributes() {
-        return ['label', 'hint', 'placeholder', 'size', 'pill', 'value', 'disabled'];
+        return ['label', 'hint', 'placeholder', 'fill', 'size', 'pill', 'value', 'disabled'];
     }
 
 // #region Attributes
@@ -1777,38 +1963,38 @@ class WPX_Input extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$a, controlStyles]);
+        this.init([styles$a, sizeStyles, controlStyles]);
     }
 
     //-------------------------------------------------------------------
     //--- connectedCallback()
     //-------------------------------------------------------------------
     connectedCallback() {
+        if (!this.fill) this.fill = 'outline';
         if (!this.size) this.size = 'md';
 
-        if (this.label) {
-            this.setHtml(`
+        const html = `
+            ${this.label ? `
                 <label class="control-label" for="input">
                     ${this.label}
                 </label>
-            `);
-        }
+            ` : ''}
 
-        this.setHtml(`
             <div class="textfield">
                 <slot name="prefix"></slot>
-                <input id="input" type="text" placeholder="${this.placeholder}">
+                <input id="input" type="text" placeholder="${this.placeholder || ''}">
                 <slot name="suffix"></slot>
             </div>
-        `);
 
-        if (this.hint) {
-            this.setHtml(`
+            ${this.hint ? `
                 <div class="control-hint">
                     ${this.hint}
                 </div>
-            `);
-        }
+            ` : ''}
+        `;
+
+        this.setHtml(html);
+        if (this.hasAttribute('value')) {this.value = this.getAttribute('value');}
     }
 
     //-------------------------------------------------------------------
@@ -1834,7 +2020,6 @@ const styles$9 = /*css*/ `
     align-items: center;
     gap: var(--wpx-spacing-xs);
     background-color: var(--wpx-color-neutral-100);
-    color: var(--wpx-color-neutral-30);
     border: none;
     border-radius: var(--wpx-border-radius-md);
     transition: all var(--wpx-transition-fast) ease;
@@ -1847,10 +2032,20 @@ const styles$9 = /*css*/ `
     background-color: color-mix(in srgb, var(--wpx-color-neutral-80) 55%, white);
 }
 
+/*------------------------------------*/
+/* --- selected --------------------- */
+/*------------------------------------*/
+:host([selected]) .item {
+    background-color: var(--wpx-color-primary-90);
+}
 
-.item--content {
+/*------------------------------------*/
+/* --- label ------------------------ */
+/*------------------------------------*/
+.label {
     flex: 1;
     display: block;
+    overflow: hidden;
 }
 
 /*------------------------------------*/
@@ -1883,18 +2078,18 @@ const styles$9 = /*css*/ `
 }
 
 /*------------------------------------*/
-/* --- toggle-icon ------------------ */
+/* --- toggle ----------------------- */
 /*------------------------------------*/
-:host(:not([has-subitems])) .toggle-icon {
+:host(:not([has-subitems])) .toggle {
     display: none;
 }
 
-.toggle-icon wpx-icon {
+.toggle wpx-icon {
     transform: rotate(0deg);
     transition: transform var(--wpx-transition-fast) ease;
 }
 
-:host([open]) .toggle-icon wpx-icon {
+:host([open]) .toggle wpx-icon {
     transform: rotate(90deg);
 }
 
@@ -1911,7 +2106,7 @@ const styles$9 = /*css*/ `
 class WPX_Item extends WPX_Element {
 
     static get observedAttributes() {
-        return ['value', 'type', 'size', 'checked', 'open', 'disabled'];
+        return ['value', 'type', 'size', 'selected', 'open', 'disabled'];
     }
 
 // #region Attributes
@@ -1935,11 +2130,11 @@ class WPX_Item extends WPX_Element {
     set size(value) {this.setAttribute('size', value);}
 
     //-------------------------------------------------------------------
-    //--- Attribute: checked
+    //--- Attribute: selected
     //-------------------------------------------------------------------
-    get checked() {return this.hasAttribute('checked');}
-    set checked(value) {
-        value ? this.setAttribute('checked', '') : this.removeAttribute('checked');
+    get selected() {return this.hasAttribute('selected');}
+    set selected(value) {
+        value ? this.setAttribute('selected', '') : this.removeAttribute('selected');
     }
 
     //-------------------------------------------------------------------
@@ -1984,9 +2179,9 @@ class WPX_Item extends WPX_Element {
         this.setHtml(`
             <div class="item">
                 <slot name="prefix"></slot>
-                <slot class="item--content"></slot>
+                <slot class="label"></slot>
                 <slot name="suffix"></slot>
-                <slot name="toggle-icon" class="toggle-icon">
+                <slot name="toggle" class="toggle">
                     <wpx-icon name="chevron-right"></wpx-icon>
                 </slot>
             </div>
@@ -2007,7 +2202,7 @@ class WPX_Item extends WPX_Element {
             return; // optional: nicht weiterbubblen
         }
 
-        const item = {value: this.value, type: this.type, checked: this.checked};
+        const item = {value: this.value, type: this.type, selected: this.selected};
         this.dispatchEvent(new CustomEvent('wpx-click', {
             detail: {item: item},
             bubbles: true,
@@ -3488,10 +3683,17 @@ class WPX_Popup extends WPX_Element {
 
         const {x, y} = await computePosition(this.anchor, this, {
             placement: this.placement || 'bottom',
-            middleware: [offset(1), flip(), shift({padding: 5})]
+            middleware: [offset(2), flip(), shift({padding: 5})]
         });
 
+        // Position setzen
         Object.assign(this.style, {left: `${x}px`, top: `${y}px`});
+
+        // NEU: Breite Option
+        // if (this.hasAttribute('match-width')) {
+        //     const anchorRect = this.anchor.getBoundingClientRect();
+        //     this.style.width = anchorRect.width + 'px';
+        // }
     }
 
     //-------------------------------------------------------------------
@@ -3509,27 +3711,39 @@ const styles$6 = /*css*/ `
     display: flex;
     flex-direction: column;
     gap: var(--wpx-spacing-xs);
+    position: relative;
+    width: 100%;
 }
 
 .select {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: var(--wpx-spacing-xs);#
+    gap: var(--wpx-spacing-sm);
+    height: var(--wpx-control-height);
     font-family: var(--wpx-font-family);
+    font-size: inherit; /* von size-Attribut */
     background-color: var(--wpx-color-neutral-100);
     border: 1px solid var(--wpx-control-border-color);
-    border-radius: var(--wpx-border-radius-sm);
+    border-radius: var(--wpx-control-border-radius);
+    padding: 0 var(--wpx-spacing-sm);
     transition: all var(--wpx-transition-fast) ease;
     overflow: hidden;
     cursor: pointer;
 }
 
-.select:focus-within {
+.select:hover {
     border-color: var(--wpx-color-primary-50);
-    box-shadow: 0 0 0 1px var(--wpx-color-primary-50);
 }
 
+.select:focus-within {
+    border-color: var(--wpx-color-primary-50);
+    box-shadow: 0 0 0 1px var(--wpx-color-primary-80);
+}
+
+/*------------------------------------*/
+/* --- input ------------------------ */
+/*------------------------------------*/
 input {
     font-family: inherit;
     font-size: inherit;
@@ -3537,35 +3751,83 @@ input {
     width: 100%;
     height: 100%; 
     border: none;
+    padding: 0;
     outline: 0;
     background: transparent;
-    padding: 0 10px;
     cursor: inherit;
 }
 
-input::placeholder {
-    color: var(--wpx-color-neutral-0);
-    opacity: 0.4;
+/*------------------------------------*/
+/* --- popup ------------------------ */
+/*------------------------------------*/
+:host wpx-popup {
+    width: 100%;
+    background-color: var(--wpx-color-neutral-100);
+    border: 1px solid var(--wpx-color-neutral-80);
+    border-radius: var(--wpx-border-radius-md);
+    padding: var(--wpx-spacing-xs2);
+    box-shadow: var(--wpx-shadow-md);
+    z-index: 100;
+}
+
+/* --- popup animations ------------- */
+:host wpx-popup {
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: opacity 0.10s ease, transform 0.10s ease;
+    pointer-events: none;
+    display: block;
+}
+
+:host wpx-popup[open] {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
 }
 
 /*------------------------------------*/
-/* --- sizes ------------------------ */
+/* --- slots -------------------------*/
 /*------------------------------------*/
-:host([size="sm"]) .select {
-    height: var(--wpx-control-height-sm);
-    font-size: var(--wpx-font-size-sm);
-}
+::slotted([slot="prefix"]) {flex: 0 0 auto;}
+::slotted([slot="suffix"]) {flex: 0 0 auto;}
+::slotted([slot="toggle"]) {flex: 0 0 auto;}
 
-:host([size="md"]) .select {
-    height: var(--wpx-control-height-md);
-    font-size: var(--wpx-font-size-md);
-}
-
-:host([size="lg"]) .select {
-    height: var(--wpx-control-height-lg);
-    font-size: var(--wpx-font-size-lg);
+::slotted(wpx-icon[slot="prefix"]),
+::slotted(wpx-icon[slot="suffix"]) {
+    color: var(--wpx-color-neutral-50);
 }
 `;
+
+//-------------------------------------------------------------------
+//--- setItems()
+//-------------------------------------------------------------------
+/**
+ * setItems
+ * Generische Funktion, um Items in einem Container zu setzen.
+ * @param {HTMLElement} container - Das übergeordnete Element
+ * @param {Array<{value: string, label: string|HTMLElement}>} items - Array von Items
+ */
+function setItems(container, items) {
+    // Alte Items entfernen
+    container.innerHTML = '';
+    
+    // Items erstellen
+    items.forEach(item => {
+        const wpxItem = document.createElement('wpx-item');
+        wpxItem.value = item.value;
+
+        // Label kann String, HTML-String oder DOM-Element sein
+        if (typeof item.label === 'string') {
+            wpxItem.innerHTML = item.label;
+        } else if (item.label instanceof HTMLElement) {
+            wpxItem.appendChild(item.label);
+        } else {
+            wpxItem.textContent = String(item.label);
+        }
+
+        container.appendChild(wpxItem);
+    });
+}
 
 //-------------------------------------------------------------------
 //--- Element: WPX_Select
@@ -3573,7 +3835,7 @@ input::placeholder {
 class WPX_Select extends WPX_Element {
 
     static get observedAttributes() {
-        return ['label', 'hint', 'placeholder', 'size', 'pill', 'value', 'disabled'];
+        return ['label', 'hint', 'placeholder', 'fill', 'size', 'pill', 'value', 'multiple', 'search', 'disabled'];
     }
 
 // #region Attributes
@@ -3597,6 +3859,12 @@ class WPX_Select extends WPX_Element {
     set placeholder(value) {this.setAttribute('placeholder', value);}
 
     //-------------------------------------------------------------------
+    //--- Attribute: fill
+    //-------------------------------------------------------------------
+    get fill() {return this.getAttribute('fill');}
+    set fill(value) {this.setAttribute('fill', value);}
+
+    //-------------------------------------------------------------------
     //--- Attribute: size
     //-------------------------------------------------------------------
     get size() {return this.getAttribute('size');}
@@ -3608,6 +3876,22 @@ class WPX_Select extends WPX_Element {
     get pill() {return this.hasAttribute('pill');}
     set pill(value) {
         value ? this.setAttribute('pill', '') : this.removeAttribute('pill');
+    }
+
+    //-------------------------------------------------------------------
+    //--- Attribute: multiple
+    //-------------------------------------------------------------------
+    get multiple() {return this.hasAttribute('multiple');}
+    set multiple(value) {
+        value ? this.setAttribute('multiple', '') : this.removeAttribute('multiple');
+    }
+
+    //-------------------------------------------------------------------
+    //--- Attribute: search
+    //-------------------------------------------------------------------
+    get search() {return this.hasAttribute('search');}
+    set search(value) {
+        value ? this.setAttribute('search', '') : this.removeAttribute('search');
     }
 
     //-------------------------------------------------------------------
@@ -3629,34 +3913,113 @@ class WPX_Select extends WPX_Element {
     //-------------------------------------------------------------------
     constructor() {
         super();
-        this.init([styles$6]);
+        this.init([styles$6, sizeStyles, controlStyles]);
     }
 
     //-------------------------------------------------------------------
     //--- connectedCallback()
     //-------------------------------------------------------------------
     connectedCallback() {
+        if (!this.fill) this.fill = 'outline';
         if (!this.size) this.size = 'md';
-        this.render();
 
-        const root = this.shadowRoot;
-        this.popup = root.querySelector('wpx-popup');
+        this.render();
+        this.ensureDefaultToggle();
+        this.trigger = this.root.querySelector('.select');
+        this.input = this.root.querySelector('input');
+        this.popup = this.root.querySelector('wpx-popup');
+
+        // Bei klick auf trigger Popup öffnen
+        this.trigger.addEventListener('click', () => {
+            this.popup.placement = 'bottom-start';
+            this.popup.anchor = this.trigger;
+            this.popup.toggle();
+        });
+
+        // Item klick abfangen
+        this.addEventListener('wpx-click', e => {
+            this.value = e.detail.item.value || '';
+            setTimeout(() => this.popup.hide(), 150);
+            this.updatedSelected();
+            //console.log('Value:', this.value);
+
+            this.dispatchEvent(new CustomEvent('wpx-change', {
+                detail: {value: this.value},
+                bubbles: true,
+                composed: true
+            }));
+        });
+
+        // Klick außerhalb -> Popup schließen
+        document.addEventListener('click', e => {
+            if (!this.contains(e.target)) this.popup.hide();
+        });
+    }
+
+    //-------------------------------------------------------------------
+    //--- updatedSelected()
+    //-------------------------------------------------------------------
+    updatedSelected() {
+        const items = Array.from(this.querySelectorAll('wpx-item'));
+        const item = items.find(i => i.value === this.value);
+
+        if (item) {
+            items.forEach(i => i.selected = false);
+            item.selected = true;
+            this.input.value = item.textContent.trim();
+        }
     }
 
     //-------------------------------------------------------------------
     //--- render()
     //-------------------------------------------------------------------
     render() {
-        this.setHtml(`
+        const html = `
+            ${this.label ? `
+                <label class="control-label" for="input">
+                    ${this.label}
+                </label>
+            ` : ''}
+
             <div class="select">
                 <slot name="prefix"></slot>
-                <input id="input" type="text" placeholder="${this.placeholder}">
+                <input id="input" type="text" readonly placeholder="${this.placeholder || ''}">
                 <slot name="suffix"></slot>
+                <slot name="toggle"></slot>
             </div>
             <wpx-popup>
                 <slot></slot>
             </wpx-popup>
-        `);
+
+            ${this.hint ? `
+                <div class="control-hint">
+                    ${this.hint}
+                </div>
+            ` : ''}
+        `;
+
+        this.setHtml(html);
+    }
+
+    //-------------------------------------------------------------------
+    //--- setItems()
+    //-------------------------------------------------------------------
+    setItems(items) {
+        setItems(this, items);
+        this.ensureDefaultToggle();
+    }
+
+    //-------------------------------------------------------------------
+    //--- ensureDefaultToggle()
+    //--- Wenn kein Toggle-Element existiert → Default einsetzen
+    //-------------------------------------------------------------------
+    ensureDefaultToggle() {
+        if (!this.querySelector('[slot="toggle"]')) {
+            const icon = document.createElement('wpx-icon');
+            icon.slot = 'toggle';
+            icon.name = 'chevron-down';
+            this.appendChild(icon);
+        }
     }
 }
 
@@ -4015,7 +4378,7 @@ const styles$2 = /*css*/ `
 .tab {
     display: flex;
     align-items: center;
-    height: var(--wpx-control-height-md);
+    height: var(--wpx-control-height);
     padding: 0 var(--wpx-spacing-sm);
     border-radius: var(--wpx-border-radius-md);
     transition: all var(--wpx-transition-fast) ease;
@@ -4206,11 +4569,6 @@ textarea {
     background: transparent;
     padding: 10px;
 }
-
-textarea::placeholder {
-    color: var(--wpx-color-neutral-0);
-    opacity: 0.4;
-}
 `;
 
 //-------------------------------------------------------------------
@@ -4321,5 +4679,5 @@ class WPX_Textarea extends WPX_Element {
 
 customElements.define('wpx-textarea', WPX_Textarea);
 
-export { WPX_Alert, WPX_Breadcrumb, WPX_BreadcrumbItem, WPX_Button, WPX_Checkbox, WPX_Details, WPX_Dialog, WPX_Divider, WPX_Drawer, WPX_Dropdown, WPX_Icon, WPX_Include, WPX_Input, WPX_Item, WPX_List, WPX_Popup, WPX_Radio, WPX_Select, WPX_Spinner, WPX_Tab, WPX_TabPanel, WPX_Tabs, WPX_Textarea };
+export { WPX_Breadcrumb, WPX_BreadcrumbItem, WPX_Button, WPX_Callout, WPX_Checkbox, WPX_Details, WPX_Dialog, WPX_Divider, WPX_Drawer, WPX_Dropdown, WPX_Empty, WPX_Icon, WPX_Include, WPX_Input, WPX_Item, WPX_List, WPX_Popup, WPX_Radio, WPX_Select, WPX_Spinner, WPX_Tab, WPX_TabPanel, WPX_Tabs, WPX_Textarea };
 //# sourceMappingURL=wpx.js.map
