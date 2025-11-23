@@ -1,271 +1,3 @@
-//-------------------------------------------------------------------
-//--- Google_DriveService
-//-------------------------------------------------------------------
-const Google_DriveService = {
-
-    //----------------------------------------------------
-    //--- getFolders()
-    //----------------------------------------------------
-    getFolders(parentId = null) {
-        return new Promise((resolve, reject) => {
-            google.script.run
-                .withSuccessHandler(resolve)
-                .withFailureHandler(reject)
-                .DriveService_getFolders(parentId);
-        });
-    },
-
-    //----------------------------------------------------
-    //--- getFiles()
-    //----------------------------------------------------
-    getFiles(query = "", mimeType = null, limit = 50) {
-        return new Promise((resolve, reject) => {
-        google.script.run
-            .withSuccessHandler(resolve)
-            .withFailureHandler(reject)
-            .DriveService_getFiles(query, mimeType, limit);
-        });
-    }
-};
-
-const styles = /*css*/ `
-:host {
-    display: block;
-}
-
-.header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: var(--wpx-spacing-xs);
-    margin-top: var(--wpx-spacing-xs);
-}
-
-.path {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 5px;
-    height: var(--wpx-control-height-md);
-    border: 1px solid var(--wpx-color-neutral-70);
-    border-radius: var(--wpx-border-radius-md);
-    padding: 0 var(--wpx-spacing-xs);
-
-    box-sizing: border-box;
-}
-
-.list {
-    margin-top: var(--wpx-spacing-xs);
-}
-
-.spinner {
-    display: flex;
-    justify-content: center;
-    font-size: 1.8rem;
-    margin-top: 40px;
-}
-`;
-
-class FilePicker extends HTMLElement {
-
-    //-------------------------------------------------------------------
-    //--- constructor()
-    //-------------------------------------------------------------------
-    constructor() {
-        super();
-        this.path = [];
-        this.items = [];
-        this.attachShadow({mode: 'open'});
-    }
-
-    //-------------------------------------------------------------------
-    //--- connectedCallback()
-    //-------------------------------------------------------------------
-    connectedCallback() {
-        this.root = this.shadowRoot;
-        this.root.innerHTML = `
-            <style>${styles}</style>
-            <div class="header">
-                <div class="path">
-                    <wpx-breadcrumb></wpx-breadcrumb>
-                </div>
-                <wpx-button>Neuer Ordner</wpx-button>
-            </div>
-            <div class="list"></div>
-        `;
-
-        this.$breadcrumb = this.root.querySelector('wpx-breadcrumb');
-        this.$list = this.root.querySelector('.list');
-        this.navigateTo(null, 'Meine Ablage');
-    }
-
-    //-------------------------------------------------------------------
-    //--- navigateTo(folderId, folderName)
-    //-------------------------------------------------------------------
-    navigateTo(folderId, folderName) {
-        const last = this.path[this.path.length - 1];
-
-        // Nur hinzufügen, wenn es ein neuer Ordner ist
-        if (!last || last.id !== folderId) {
-            this.path.push({id: folderId, name: folderName});
-        }
-
-        this.load(folderId);
-    }
-
-    //-------------------------------------------------------------------
-    //--- navigateIndex(index) – Breadcrumb Klick
-    //-------------------------------------------------------------------
-    navigateIndex(index) {
-        this.path = this.path.slice(0, index + 1);
-        const current = this.path[this.path.length - 1];
-        this.load(current.id);
-    }
-
-    //-------------------------------------------------------------------
-    //--- load(parentId)
-    //-------------------------------------------------------------------
-    async load(parentId) {
-        this.$list.innerHTML = `
-            <div class="spinner">
-                <wpx-spinner></wpx-spinner>
-            </div>
-        `;
-        this.items = await Google_DriveService.getFolders(parentId);
-        this.renderBreadcrumb();
-        this.renderList();
-    }
-
-    //-------------------------------------------------------------------
-    //--- renderBreadcrumb()
-    //-------------------------------------------------------------------
-    renderBreadcrumb() {
-        this.$breadcrumb.innerHTML = this.path.map((p, i) => `
-            <wpx-breadcrumb-item data-index="${i}">${p.name}</wpx-breadcrumb-item>
-        `).join('');
-
-        this.$breadcrumb.querySelectorAll('wpx-breadcrumb-item').forEach(el => {
-            el.addEventListener('click', () => {
-                const index = parseInt(el.dataset.index);
-                this.navigateIndex(index);
-            });
-        });
-    }
-
-    //-------------------------------------------------------------------
-    //--- renderList()
-    //-------------------------------------------------------------------
-    renderList() {
-        this.$list.innerHTML = this.items.map(item => `
-            <wpx-item data-id="${item.id}" data-type="${item.type}">
-                <wpx-icon slot="prefix" name="${item.type === 'folder' ? 'folder' : 'file'}"></wpx-icon>
-                ${item.name}
-            </wpx-item>
-        `).join("");
-
-        this.$list.querySelectorAll('wpx-item').forEach(item => {
-            // Einfach-Klick auf Datei
-            item.addEventListener('wpx-click', () => {
-                const id = item.dataset.id;
-                const type = item.dataset.type;
-
-                if (type === "folder") {
-                    console.log("Folder clicked — waiting for double-click…");
-                } else {
-                    this.selectFile(id);
-                }
-            });
-
-            // Doppel-Klick auf Ordner → Navigation
-            item.addEventListener('dblclick', () => {
-                if (item.dataset.type === "folder") {
-                    this.navigateTo(item.dataset.id, item.textContent.trim());
-                }
-            });
-        });
-    }
-
-    //-------------------------------------------------------------------
-    //--- selectFile(fileId)
-    //-------------------------------------------------------------------
-    selectFile(fileId) {
-        const file = this.items.find(i => i.id === fileId);
-        this.dispatchEvent(new CustomEvent("file-selected", {
-            detail: file,
-            bubbles: true,
-            composed: true
-        }));
-    }
-}
-
-customElements.define('google-file-picker', FilePicker);
-
-const TRANSLATIONS = {
-    en: {
-        startTitle: 'Welcome to<br>TextExpress',
-        startText1: 'Du kannst gleich loslegen.',
-        startText2: 'TextExpress benötigt eine Google-Sheet Datei um Textbausteine und Einstellungen zu speichern.',
-        startText3: 'Klicke auf "Neue Datei erstellen" um eine TextExpress-Datei anzulegen, oder öffne eine vorhandene Datei, die mit TextExpress erstellt wurde.',
-        fileCreate: 'Datei erstellen',
-        fileOpen: 'Datei öffnen',
-        support: 'Support',
-        documentation: 'Documentation'
-    },
-    de: {
-        startTitle: 'Herzlich Willkommen<br>bei TextExpress!',
-        startText1: 'Du kannst gleich loslegen.',
-        startText2: 'TextExpress benötigt eine Google-Sheet Datei um Textbausteine und Einstellungen zu speichern.',
-        startText3: 'Klicke auf "Neue Datei erstellen" um eine TextExpress-Datei anzulegen, oder öffne eine vorhandene Datei, die mit TextExpress erstellt wurde.',
-        fileCreate: 'Datei erstellen',
-        fileOpen: 'Datei öffnen',
-        support: 'Support',
-        documentation: 'Dokumentation'
-    }
-};
-
-class Lang {
-
-    //-------------------------------------------------------------------
-    //--- constructor()
-    //-------------------------------------------------------------------
-    constructor(lang = 'de') {
-        this.lang = lang;
-    }
-
-    //-------------------------------------------------------------------
-    //--- setLang()
-    //-------------------------------------------------------------------
-    setLang(lang) {
-        this.lang = lang;
-        document.dispatchEvent(new CustomEvent('lang-change', {detail: lang}));
-    }
-
-    //-------------------------------------------------------------------
-    //--- updateUI()
-    //-------------------------------------------------------------------
-    updateUI() {
-        document.querySelectorAll('[data-txt]').forEach(el => {
-            el.textContent = this.t(el.dataset.txt);
-        });
-    }
-
-    //-------------------------------------------------------------------
-    //--- t()
-    //-------------------------------------------------------------------
-    t(key, params = {}) {
-        const translations = TRANSLATIONS[this.lang] || TRANSLATIONS['en'];
-        let text = translations[key] || key;
-
-        for (const p in params) {
-            text = text.replace(`{{${p}}}`, params[p]);
-        }
-        return text;
-    }
-}
-
-const lang = new Lang(navigator.language.startsWith('de') ? 'de' : 'en');
-
 class Placeholders {
 
     #types = {};
@@ -431,7 +163,11 @@ class PH_Date {
     edit(ph, context = {}) {
         const f = ph.attrs.format || "DD.MM.YYYY";
         return `
-            <wpx-input label="Format" hint="Der Format des Datums." value="${f}"></wpx-input>
+            <div class="form-control">
+                <div class="form-label">Format</div>
+                <wpx-input value="${f}"></wpx-input>
+                <div class="form-hint">Beispiel:</div>
+            </div>
         `;
     }
 
@@ -441,6 +177,53 @@ class PH_Date {
     execute(ph, context = {}) {
         const f = ph.attrs.format || "DD.MM.YYYY";
         return formatDate(new Date(), f);
+    }
+}
+
+class PH_Field {
+
+    //-------------------------------------------------------------------
+    //--- constructor()
+    //-------------------------------------------------------------------
+    constructor() {
+        this.type = 'field';
+        this.desc = 'Zeigt einen Wert aus einer Datenquelle an.';
+        this.attrs = {};
+    }
+
+    //-------------------------------------------------------------------
+    //--- chip()
+    //-------------------------------------------------------------------
+    chip(ph, context = {}) {
+        return `<span class="chip">${ph.type}</span>`;
+    }
+
+    //-------------------------------------------------------------------
+    //--- edit()
+    //-------------------------------------------------------------------
+    edit(ph, context = {}) {
+        return `
+            <div class="form-control">
+                <div class="form-label">Datenfeld</div>
+                <wpx-select></wpx-select>
+                <div class="form-hint">Der Name des Feldes.</div>
+            </div>
+        `;
+    }
+
+    //-------------------------------------------------------------------
+    //--- renderUI()
+    //-------------------------------------------------------------------
+    renderUI(ph, context = {}) {
+        return null;
+    }
+
+    //-------------------------------------------------------------------
+    //--- execute()
+    //-------------------------------------------------------------------
+    execute(ph, context = {}) {
+        // Liefert den Wert aus der Datenquelle
+        return context.row?.[ph.name] || '';
     }
 }
 
@@ -467,8 +250,17 @@ class PH_FormText {
     //-------------------------------------------------------------------
     edit(ph, context = {}) {
         return `
-            <wpx-input label="Name (optional)" hint="Der Name des Textfelds." value=""></wpx-input>
-            <wpx-input label="Standardwert" hint="Der Standardwert des Textfelds."></wpx-input>
+            <div class="form-control">
+                <div class="form-label">Name (optional)</div>
+                <wpx-input></wpx-input>
+                <div class="form-hint">Der Name des Textfelds.</div>
+            </div>
+
+            <div class="form-control">
+                <div class="form-label">Standardwert (optional)</div>
+                <wpx-input></wpx-input>
+                <div class="form-hint">Der Standardwert des Textfelds.</div>
+            </div>
         `;
     }
 
@@ -495,7 +287,7 @@ class PH_Note {
     //-------------------------------------------------------------------
     constructor() {
         this.type = 'note';
-        this.desc = 'Zeigt eine Notiz an. Wird nicht im entgütigen Inhalt angezeigt.';
+        this.desc = 'Zeigt eine interne Notiz an. Wird nicht im entgütigen Inhalt angezeigt.';
         this.attrs = {};
     }
 
@@ -510,8 +302,19 @@ class PH_Note {
     //--- edit()
     //-------------------------------------------------------------------
     edit(ph, context = {}) {
+        ph.attrs.text || '';
         return `
-            <wpx-textarea label="Text" hint="Der Inhalt der Notiz." value="${ph.attrs.text}"></wpx-textarea>
+            <div class="form-control">
+                <div class="form-label">Text</div>
+                <wpx-textarea value="${ph.attrs.text}"></wpx-textarea>
+                <div class="form-hint">Der Inhalt der Notiz.</div>
+            </div>
+
+            <div class="form-control">
+                <div class="form-label">Farbe</div>
+                <wpx-select></wpx-select>
+                <div class="form-hint">Die Hintergrundfarbe der Notiz.</div>
+            </div>
         `;
     }
 
@@ -534,9 +337,18 @@ class PH_Note {
 //-------------------------------------------------------------------
 function registerPlaceholders() {
     placeholders.register('date', new PH_Date());
+    placeholders.register('field', new PH_Field());
     placeholders.register('form.text', new PH_FormText());
     placeholders.register('note', new PH_Note());
 }
+
+const Addon_Chrome = {
+    init() {
+        registerPlaceholders();
+        console.log("Chrome Addon initialized");
+        // z.B. Side Panel aufbauen, Snippets laden, WPX UI starten
+    }
+};
 
 //-------------------------------------------------------------------
 //--- Google_UIService
@@ -782,14 +594,22 @@ const DrawerPlaceholder = {
     //--- show()
     //-------------------------------------------------------------------
     show(ph) {
+        const phList = this.refs['placeholder-list'];
         const phDesc = this.refs['placeholder-desc'];
-        const phForm = this.refs['placeholder-edit'];
-        
+        const phForm = this.refs['placeholder-form'];
+
+        const items = placeholders.list().map(p => ({
+            label: p.type,
+            value: p.type
+        }));
+
+        phList.setItems(items);
+        phList.value = ph.type;
         phDesc.innerHTML = ph.desc;
         phForm.innerHTML = '';
         phForm.innerHTML = placeholders.edit(ph);
 
-        this.drawer.label = `{} Einfügen: ${ph.type}`;
+        this.drawer.label = `Platzhalter einfügen`;
         this.drawer.show();
         console.log(ph);
     },
@@ -878,7 +698,7 @@ const PanelSnippets = {
                         ${cat.snippets.map(s => `
                             <wpx-item size="sm" data-type="snippet" data-id="${s.id}">
                                 ${s.label}
-                                <wpx-icon slot="prefix" name="file-text"></wpx-icon>
+                                <wpx-icon slot="prefix" name="snippet"></wpx-icon>
                             </wpx-item>
                         `).join('')}
                     </div>
@@ -968,12 +788,81 @@ const SidebarIndex = {
     }
 };
 
-const Addon_Docs = {
+const TRANSLATIONS = {
+    en: {
+        startTitle: 'Welcome to<br>TextExpress',
+        startText1: 'Du kannst gleich loslegen.',
+        startText2: 'TextExpress benötigt eine Google-Sheet Datei um Textbausteine und Einstellungen zu speichern.',
+        startText3: 'Klicke auf "Neue Datei erstellen" um eine TextExpress-Datei anzulegen, oder öffne eine vorhandene Datei, die mit TextExpress erstellt wurde.',
+        fileCreate: 'Datei erstellen',
+        fileOpen: 'Datei öffnen',
+        support: 'Support',
+        documentation: 'Documentation'
+    },
+    de: {
+        startTitle: 'Herzlich Willkommen<br>bei TextExpress!',
+        startText1: 'Du kannst gleich loslegen.',
+        startText2: 'TextExpress benötigt eine Google-Sheet Datei um Textbausteine und Einstellungen zu speichern.',
+        startText3: 'Klicke auf "Neue Datei erstellen" um eine TextExpress-Datei anzulegen, oder öffne eine vorhandene Datei, die mit TextExpress erstellt wurde.',
+        fileCreate: 'Datei erstellen',
+        fileOpen: 'Datei öffnen',
+        support: 'Support',
+        documentation: 'Dokumentation'
+    }
+};
 
+class Lang {
+
+    //-------------------------------------------------------------------
+    //--- constructor()
+    //-------------------------------------------------------------------
+    constructor(lang = 'de') {
+        this.lang = lang;
+    }
+
+    //-------------------------------------------------------------------
+    //--- setLang()
+    //-------------------------------------------------------------------
+    setLang(lang) {
+        this.lang = lang;
+        document.dispatchEvent(new CustomEvent('lang-change', {detail: lang}));
+    }
+
+    //-------------------------------------------------------------------
+    //--- updateUI()
+    //-------------------------------------------------------------------
+    updateUI() {
+        document.querySelectorAll('[data-txt]').forEach(el => {
+            el.innerHTML = this.t(el.dataset.txt);
+        });
+    }
+
+    //-------------------------------------------------------------------
+    //--- t()
+    //-------------------------------------------------------------------
+    t(key, params = {}) {
+        const translations = TRANSLATIONS[this.lang] || TRANSLATIONS['en'];
+        let text = translations[key] || key;
+
+        for (const p in params) {
+            text = text.replace(`{{${p}}}`, params[p]);
+        }
+        return text;
+    }
+}
+
+new Lang(navigator.language.startsWith('de') ? 'de' : 'en');
+
+//export {FilePicker} from './elements/filepicker/file-picker.js';
+
+const Addon_Docs = {
     //-------------------------------------------------------------------
     //--- init()
     //-------------------------------------------------------------------
-    init(page) {
+    init() {
+        registerPlaceholders();
+        const page = document.body.dataset.page;
+
         switch (page) {
             case 'sidebar-start':
                 SidebarStart.init();
@@ -982,26 +871,28 @@ const Addon_Docs = {
                 SidebarIndex.init();
                 break;
         }
+
+        //lang.updateUI();
+        console.log("Docs Addon initialized");
     }
 };
 
-registerPlaceholders();
+const Platform = {
+    isChrome: !!window.chrome?.runtime?.id,
+    isDocs: typeof google !== 'undefined' && google.script
+};
+
 document.addEventListener('DOMContentLoaded', () => {
 
-    const platform = document.body.dataset.platform;
-    const page = document.body.dataset.page;
-
-    //console.log('Platform:', platform);
-    //console.log('Page:', page);
-
-    switch (platform) {
-        case 'docs':
-            Addon_Docs.init(page);
-            break;
+    if (Platform.isChrome) {
+        Addon_Chrome.init();
+    } else if (Platform.isDocs) {
+        Addon_Docs.init();
+    } else {
+        console.warn("Keine unterstützte Plattform erkannt");
     }
 
-    lang.updateUI();
+    //Addon_Chrome.init(); //nur zum test auf localhost
+    Addon_Docs.init(); //nur zum test auf localhost
 });
-
-export { FilePicker };
 //# sourceMappingURL=addon.js.map
