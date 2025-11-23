@@ -705,6 +705,7 @@ const PanelSnippets = {
     //--- listSnippets()
     //-------------------------------------------------------------------
     async listSnippets() {
+        ModelSnippets.load();
         //console.log(await ModelSnippets.load());
         const snippetData = ModelSnippets.getAll();
         const snippetList = this.refs['list-snippets'];
