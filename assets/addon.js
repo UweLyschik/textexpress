@@ -715,11 +715,12 @@ const PanelSnippets = {
     //--- listSnippets()
     //-------------------------------------------------------------------
     async listSnippets() {
+        const snippetList = this.refs['list-snippets'];
+        snippetList.innerHTML = '<wpx-spinner></wpx-spinner>';
+
         await ModelSnippets.load();
         const snippetData = ModelSnippets.getAll();
-        const snippetList = this.refs['list-snippets'];
 
-        snippetList.innerHTML = '';
         snippetList.innerHTML = `
             ${snippetData.map(cat => `
                 <wpx-item size="sm" data-type="category">
