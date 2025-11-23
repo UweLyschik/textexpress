@@ -450,7 +450,19 @@ const Platform = {
 const GS_SnippetService = {
 
     //-------------------------------------------------------------------
-    //--- loadSnippets(ss)
+    //--- loadAll(sheetId)
+    //-------------------------------------------------------------------
+    loadAll(sheetId) {
+        return new Promise((resolve, reject) => {
+        google.script.run
+            .withSuccessHandler(resolve)
+            .withFailureHandler(reject)
+            .SnippetService_loadAll(sheetId);
+        });
+    },
+
+    //-------------------------------------------------------------------
+    //--- loadSnippets(sheetId)
     //-------------------------------------------------------------------
     loadSnippets(sheetId) {
         return new Promise((resolve, reject) => {
@@ -472,9 +484,7 @@ const ModelSnippets = {
     async load() {
         if (Platform.isChrome) ; else if (Platform.isDocs) {
             const sheetId = '1MkwM59_YccASEHgCm_5pb-71sk55LBLz_PsuXq8Ykz0';
-            this.snippets = await GS_SnippetService.loadSnippets(sheetId);
-            console.log(this.snippets);
-
+            this.snippets = await GS_SnippetService.loadAll(sheetId);
         } else {
             console.warn("Textbausteine konnten nicht geladen werden!");
             this.snippets = [
@@ -705,8 +715,7 @@ const PanelSnippets = {
     //--- listSnippets()
     //-------------------------------------------------------------------
     async listSnippets() {
-        ModelSnippets.load();
-        //console.log(await ModelSnippets.load());
+        await ModelSnippets.load();
         const snippetData = ModelSnippets.getAll();
         const snippetList = this.refs['list-snippets'];
 
